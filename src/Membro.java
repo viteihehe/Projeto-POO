@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class Membro {
+public class Membro extends Usuario {
 
     private String endereco;
     private String telefone;
