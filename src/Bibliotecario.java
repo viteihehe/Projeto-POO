@@ -1,4 +1,5 @@
 
+import java.util.List;
 
 public class Bibliotecario extends Usuario {
 private String cargo;
@@ -13,6 +14,11 @@ private String cargo;
 
     public void verBibliotecario(){
     }
+
+    public List<Bibliotecario> listarBibliotecarios(){
+        return listarBibliotecarios();
+    }
+
 
     public String getCargo() {
         return cargo;
