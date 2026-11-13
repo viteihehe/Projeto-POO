@@ -1,51 +1,52 @@
-import java.util.Date;
+package entities;
+import java.time.LocalDate;
 
 public class Emprestimo {
     
-    private Date dataEmprestimo;
-    private Date dataDevolucaoPrevista;
-    private Date dataDevolucaoReal;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucaoPrevista;
+    private LocalDate dataDevolucaoReal;
     private boolean devolvido;
 
     /**
      * @return Date return the dataEmprestimo
      */
-    public Date getDataEmprestimo() {
+    public LocalDate getDataEmprestimo() {
         return dataEmprestimo;
     }
 
     /**
      * @param dataEmprestimo the dataEmprestimo to set
      */
-    public void setDataEmprestimo(Date dataEmprestimo) {
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
         this.dataEmprestimo = dataEmprestimo;
     }
 
     /**
-     * @return Date return the dataDevolucaoPrevista
+     * @return LocalDate return the dataDevolucaoPrevista
      */
-    public Date getDataDevolucaoPrevista() {
+    public LocalDate getDataDevolucaoPrevista() {
         return dataDevolucaoPrevista;
     }
 
     /**
      * @param dataDevolucaoPrevista the dataDevolucaoPrevista to set
      */
-    public void setDataDevolucaoPrevista(Date dataDevolucaoPrevista) {
+    public void setDataDevolucaoPrevista(LocalDate dataDevolucaoPrevista) {
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
     }
 
     /**
-     * @return Date return the dataDevolucaoReal
+     * @return LocalDate return the dataDevolucaoReal
      */
-    public Date getDataDevolucaoReal() {
+    public LocalDate getDataDevolucaoReal() {
         return dataDevolucaoReal;
     }
 
     /**
      * @param dataDevolucaoReal the dataDevolucaoReal to set
      */
-    public void setDataDevolucaoReal(Date dataDevolucaoReal) {
+    public void setDataDevolucaoReal(LocalDate dataDevolucaoReal) {
         this.dataDevolucaoReal = dataDevolucaoReal;
     }
 
@@ -62,5 +63,4 @@ public class Emprestimo {
     public void setDevolvido(boolean devolvido) {
         this.devolvido = devolvido;
     }
-
 }

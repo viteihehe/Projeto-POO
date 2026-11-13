@@ -3,7 +3,7 @@ Projeto para disciplina de POO. Construção de um sistema de gerênciamento de 
 
 ## Banco de dados
 ### Conceitual
-![Modelo Conceitual do banco de dados do projeto](./ImagensModelos/Conceitual.png)
+![Modelo Conceitual do banco de dados do projeto](./bdsamples/Conceitual.png)
 
 ### Logico
-![Modelo Logico do banco de dados do projeto](./ImagensModelos/Logico.png)
+![Modelo Logico do banco de dados do projeto](./bdsamples/Logico.png)

@@ -1,3 +1,4 @@
+package entities;
 import java.util.List;
 
 public class Membro extends Usuario {

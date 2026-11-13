@@ -1,5 +1,6 @@
-import java.util.List;
+package entities;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Usuario {
     private String nome;
@@ -48,7 +49,4 @@ public abstract class Usuario {
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
-
-
-    
 }
