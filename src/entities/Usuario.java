@@ -9,16 +9,31 @@ public abstract class Usuario {
     private String senha;
     private boolean ativo;
     
-    public void verUsuario(){}
+    public void verUsuario(){
+        System.out.println(this);
+    }
     public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){}
     public void desativarUsuario(Usuario usuario){}
     public boolean autenticar(String login, String senha){
         return ativo;
     }
-    public List<Usuario>listarUsuarios(){
+
+    public List<Usuario>listarUsuarios(List<Usuario> usuarios){
         List<Usuario> lista = new ArrayList<>();
+        
+        for (Usuario usuario : usuarios) {
+            lista.add(usuario);
+            System.out.println(usuario);
+        }
         return lista;
     }
+
+    @Override
+    public String toString(){
+        return "Nome:" + getNome() + "\nCPF:" + getCpf() + "\nLogin:" + getLogin() + "\nSenha:" + getSenha() + "\nAtivo:" + isAtivo() + "\n";
+    }
+
+
     public String getNome() {
         return nome;
     }
@@ -31,6 +46,64 @@ public abstract class Usuario {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+    public String converteCpf(String cpf){
+        cpf = cpf.replaceAll("\\D", "");
+        return cpf;
+    }
+
+    public boolean validaCpf(String cpf){
+
+        cpf = converteCpf(cpf);
+            if (cpf == null || !cpf.matches("\\d{11}")) {
+                return false;
+            }
+
+            if (cpf.matches("(\\d)\\1{10}")) {
+                return false;
+            }
+
+    char dig10, dig11;
+    int sm, r, num, peso;
+
+    sm = 0;
+    peso = 10;
+
+        for (int i = 0; i < 9; i++) {
+            num = cpf.charAt(i) - 48;
+            sm += num * peso;
+            peso--;
+        }
+
+    r = 11 - (sm % 11);
+
+        if (r == 10 || r == 11) {
+            dig10 = '0';
+        } else {
+            dig10 = (char)(r + 48);
+        }
+
+    sm = 0;
+    peso = 11;
+
+        for (int i = 0; i < 10; i++) {
+            num = cpf.charAt(i) - 48;
+            sm += num * peso;
+            peso--;
+        }
+
+    r = 11 - (sm % 11);
+
+        if (r == 10 || r == 11) {
+            dig11 = '0';
+        } else {
+            dig11 = (char)(r + 48);
+        }
+
+    return dig10 == cpf.charAt(9) && dig11 == cpf.charAt(10);
+    }
+
+
     public String getLogin() {
         return login;
     }

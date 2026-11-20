@@ -68,4 +68,39 @@ public class Membro extends Usuario {
         this.email = email;
     }
 
+    public String converteTelefone(String telefone){
+        telefone = telefone.replaceAll("\\D", "");
+        return telefone;
+    }
+
+    public boolean validaTelefone(String telefone){
+        telefone = converteTelefone(telefone);
+
+        if (telefone == null) {
+            throw new NullPointerException("Telefone nulo");
+        }
+
+        telefone = converteTelefone(telefone);
+
+        if (!telefone.matches("^[1-9]{2}9\\d{8}|[2-5]\\d{7})$")) {
+            throw new IllegalArgumentException("Telefone inválido");
+        }
+
+        return true;
+
+    }
+
+    public boolean validaEmail(String email){
+        
+        email = getEmail();
+
+        if(!email.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@" 
+        + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")){
+            System.out.println("Endereço de Email invalido");
+        } 
+
+        return true;
+        
+    }
+    
 }
