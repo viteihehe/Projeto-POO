@@ -13,7 +13,7 @@ java {
 }
 
 dependencies {
-    implementation("org.postgresql:postgresql:42.7.4")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
 }
 
 sourceSets {
@@ -26,3 +26,4 @@ sourceSets {
 application {
     mainClass = "App"
 }
+
