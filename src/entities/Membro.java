@@ -11,6 +11,10 @@ public class Membro extends Usuario {
     }
 
     public Membro(String nome, String cpf, String login, String senha, boolean ativo, String endereco, String telefone, String email) {
+        super(nome, cpf, login, senha);
+        this.endereco = endereco;
+        this.telefone = telefone;
+        this.email = email;
     }
 
     public static void editarMembro(Membro membro, String nome, String cpf, String login,
@@ -77,12 +81,12 @@ public class Membro extends Usuario {
         telefone = converteTelefone(telefone);
 
         if (telefone == null) {
-            throw new NullPointerException("Telefone nulo");
+            throw new NullPointerException("Telefone não pode ser nulo");
         }
 
         telefone = converteTelefone(telefone);
 
-        if (!telefone.matches("^[1-9]{2}9\\d{8}|[2-5]\\d{7})$")) {
+        if (!telefone.matches("^[1-9]{2}(9\\d{8}|[2-5]\\d{7})$")) {
             throw new IllegalArgumentException("Telefone inválido");
         }
 
@@ -99,8 +103,12 @@ public class Membro extends Usuario {
             System.out.println("Endereço de Email invalido");
         } 
 
-        return true;
+        return false;
         
     }
     
+    @Override 
+    public String toString(){
+        return super.toString() + endereco + telefone + email;
+    }
 }

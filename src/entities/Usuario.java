@@ -8,14 +8,24 @@ public abstract class Usuario {
     private String login;
     private String senha;
     private boolean ativo;
+
+    public Usuario(String nome, String cpf, String login, String senha){
+        setNome(nome);
+        setCpf(cpf);
+        setLogin(login);
+        setSenha(senha);
+        this.ativo = true;
+    }
     
     public void verUsuario(){
         System.out.println(this);
     }
     public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){}
-    public void desativarUsuario(Usuario usuario){}
+    public void desativarUsuario(Usuario usuario){
+        this.ativo = false;
+    }
     public boolean autenticar(String login, String senha){
-        return ativo;
+        return ativo && this.login.equals(login) && this.senha.equals(senha);
     }
 
     public List<Usuario>listarUsuarios(List<Usuario> usuarios){
@@ -30,7 +40,7 @@ public abstract class Usuario {
 
     @Override
     public String toString(){
-        return "Nome:" + getNome() + "\nCPF:" + getCpf() + "\nLogin:" + getLogin() + "\nSenha:" + getSenha() + "\nAtivo:" + isAtivo() + "\n";
+        return "Nome:" + getNome() + "\nCPF:" + getCpf() + "\nLogin:" + getLogin() + "\nAtivo:" + isAtivo() + "\n";
     }
 
 
@@ -44,7 +54,10 @@ public abstract class Usuario {
         return cpf;
     }
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        if(!validaCpf(cpf)){
+            throw new IllegalArgumentException("CPF invalido");
+        }
+        this.cpf = converteCpf(cpf);
     }
 
     public String converteCpf(String cpf){
@@ -53,8 +66,11 @@ public abstract class Usuario {
     }
 
     public boolean validaCpf(String cpf){
-
+        if(cpf == null){
+            return false;
+        }
         cpf = converteCpf(cpf);
+        
             if (cpf == null || !cpf.matches("\\d{11}")) {
                 return false;
             }
