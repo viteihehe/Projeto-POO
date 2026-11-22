@@ -1,32 +1,51 @@
 package UI;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import java.awt.FlowLayout;
+import java.util.List;
+import java.util.Scanner;
+import entities.Usuario;
 
-public class TelaSistemaBiblioteca {
-    private JFrame janela;
-    
-    public TelaSistemaBiblioteca(){
-        janela = new JFrame("Sistema de Gerenciamento de Biblioteca"); 
-        janela.setSize(400, 300);
-        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        janela.setLayout(new FlowLayout());
-        addComponentes();
-    }
-    
-    private void addComponentes(){
-        JLabel lblBoasVindas = new JLabel("Selecione uma opção"); 
-        JButton btnLogin = new JButton("Login"); 
-        JButton btnCadastro = new JButton("Cadastro"); 
+public class TelaSistemaBiblioteca extends TelaBase {
 
-        janela.add(lblBoasVindas);
-        janela.add(btnLogin);
-        janela.add(btnCadastro);
+    private final List<Usuario> usuarios;
+
+    public TelaSistemaBiblioteca(Scanner sc, List<Usuario> usuarios) {
+        super(sc);
+        this.usuarios = usuarios;
     }
 
-    public void mostrar(){
-        janela.setVisible(true);
+    @Override
+    public void mostrar() {
+        boolean executando = true;
+
+        while (executando) {
+            titulo("SISTEMA DE GERENCIAMENTO DE BIBLIOTECA");
+            System.out.println("1 - Login");
+            System.out.println("2 - Cadastro");
+            System.out.println("3 - Sair");
+
+            switch (lerOpcao()) {
+                case 1 -> new TelaLogin(sc, usuarios).mostrar();
+                case 2 -> mostrarMenuCadastro();
+                case 3 -> {
+                    System.out.println("Adeus!");
+                    executando = false;
+                }
+                default -> System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    private void mostrarMenuCadastro() {
+        titulo("CADASTRO");
+        System.out.println("1 - Bibliotecário");
+        System.out.println("2 - Membro");
+        System.out.println("3 - Voltar");
+
+        switch (lerOpcao()) {
+            case 1 -> new TelaCadastroBibliotecario(sc, usuarios).mostrar();
+            case 2 -> new TelaCadastroMembro(sc, usuarios).mostrar();
+            case 3 -> { /* apenas volta ao menu inicial */ }
+            default -> System.out.println("Opção inválida!");
+        }
     }
 }
