@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Bibliotecario extends Usuario {
     private String cargo;
-    private static final List<Bibliotecario> cadastrados = new ArrayList<>();
+    private static final List<Bibliotecario> bibliotecarios = new ArrayList<>();
 
     public Bibliotecario(String nome, String cpf, String login, String senha, String cargo) {
         super(nome, cpf, login, senha);
         this.cargo = cargo;
-        cadastrados.add(this);
+        bibliotecarios.add(this);
     }
 
     public static Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, String cargo){
@@ -33,7 +33,7 @@ public class Bibliotecario extends Usuario {
     }
 
     public static List<Bibliotecario> listarBibliotecarios() {
-        return new ArrayList<>(cadastrados);
+        return new ArrayList<>(bibliotecarios);
     }
 
 
