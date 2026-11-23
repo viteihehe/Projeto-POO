@@ -24,7 +24,7 @@ public class Membro extends Usuario {
     private String telefone;
     private String email;
 
-    private Membro(String nome, String cpf, String login, String senha, String endereco, String telefone, String email) {
+    public Membro(String nome, String cpf, String login, String senha, String endereco, String telefone, String email) {
         super(nome, cpf, login, senha);
         setEndereco(endereco);
         setTelefone(telefone);

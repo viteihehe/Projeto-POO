@@ -18,7 +18,7 @@ public class Emprestimo {
     private Date dataDevolucaoReal;
     private boolean devolvido;
 
-    private Emprestimo(Livro livro, Membro membro) {
+    public Emprestimo(Livro livro, Membro membro) {
         this.livro = livro;
         this.membro = membro;
         this.dataEmprestimo = new Date();
