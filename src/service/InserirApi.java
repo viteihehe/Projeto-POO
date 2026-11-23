@@ -34,10 +34,12 @@ public class InserirApi implements API {
         if (resposta.statusCode() == 201) {
             return "Sucesso!";
         } else {
+            System.out.println("Status HTTP: " + resposta.statusCode());
+            System.out.println("Corpo da resposta: " + resposta.body());
             try {
                 return mapper.readValue(resposta.body(), String.class);
             } catch (Exception e) {
-                return "CPF, Login, ou email em uso!";
+                return "Erro ao interpretar a resposta da API";
             }
         }
     }
