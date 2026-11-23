@@ -20,7 +20,16 @@ public abstract class Usuario {
     public void verUsuario(){
         System.out.println(this);
     }
-    public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){}
+    public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){
+        if(!validaCpf(cpf)){
+            throw new IllegalArgumentException("CPF inválido, alteração não realizada");
+        }
+        usuario.setNome(nome);
+        usuario.setCpf(cpf);
+        usuario.setLogin(login);
+        usuario.setSenha(senha);
+        usuario.setAtivo(ativo);
+    }
     public void desativarUsuario(Usuario usuario){
         this.ativo = false;
     }
