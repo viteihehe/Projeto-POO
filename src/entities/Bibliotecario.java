@@ -1,27 +1,39 @@
-package  entities;
+package entities;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bibliotecario extends Usuario {
-private String cargo;
+    private String cargo;
+    private static final List<Bibliotecario> cadastrados = new ArrayList<>();
 
     public Bibliotecario(String nome, String cpf, String login, String senha, String cargo) {
-    super(nome, cpf, login, senha);
-    this.cargo = cargo;
-}
-
-    public Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, String cargo){
-        return criarBibliotecario(nome, cpf, login, senha, cargo);
+        super(nome, cpf, login, senha);
+        this.cargo = cargo;
+        cadastrados.add(this);
     }
 
-    public void editarBibliotecario(Bibliotecario bibliotecario, String nome, String cpf, String login, String senha, String cargo){
-    this.editarBibliotecario(bibliotecario, nome, cpf, login, senha, cargo);
+    public static Bibliotecario criarBibliotecario(String nome, String cpf, String login, String senha, String cargo){
+        if (cargo == null || cargo.isBlank()) {
+            throw new IllegalArgumentException("Cargo invalido");
+        }
+        Bibliotecario b = new Bibliotecario(nome, cpf, login, senha, cargo);
+        return b;
+    }
+
+    public static void editarBibliotecario(Bibliotecario bibliotecario, String nome, String cpf, String login, String senha, String cargo){
+        if(cargo == null || cargo.isBlank()){
+            throw new IllegalArgumentException("Cargo invalido, alteração não realizada");
+        }
+        Usuario.editarUsuario(bibliotecario, nome, cpf, login, senha, bibliotecario.isAtivo());
+        bibliotecario.setCargo(cargo);
     }
 
     public void verBibliotecario(){
+        System.out.println(this);
     }
 
-    public List<Bibliotecario> listarBibliotecarios(){
-        return listarBibliotecarios();
+    public static List<Bibliotecario> listarBibliotecarios() {
+        return new ArrayList<>(cadastrados);
     }
 
 

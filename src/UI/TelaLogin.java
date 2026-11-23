@@ -39,7 +39,7 @@ public class TelaLogin extends TelaBase {
 
     private Usuario autenticar(String login, String senha) {
         for (Usuario u : usuarios) {
-            if (u.autenticar(login, senha)) {
+            if (Usuario.autenticar(login, senha)) {
                 return u;
             }
         }

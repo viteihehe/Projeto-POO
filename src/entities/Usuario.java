@@ -51,7 +51,7 @@ public abstract class Usuario {
 
 
     public static List<Usuario>listarUsuarios(List<Usuario> usuarios){
-        List<Usuario> lista = new ArrayList<>();
+        List<Usuario> lista = new ArrayList<>(usuarios);
         
         for (Usuario usuario : usuarios) {
             lista.add(usuario);
@@ -83,8 +83,10 @@ public abstract class Usuario {
     }
 
     public static String converteCpf(String cpf){
-        cpf = cpf.replaceAll("\\D", "");
-        return cpf;
+        if (cpf == null) {
+            return null;
+        }
+        return cpf.replaceAll("\\D", "");
     }
 
     public static boolean validaCpf(String cpf){
