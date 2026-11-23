@@ -1,17 +1,14 @@
 package UI;
 
-import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
+
 import entities.Membro;
-import entities.Usuario;
+import service.InserirApi;
 
 public class TelaCadastroMembro extends TelaCadastroBase {
 
-    private static final Pattern EMAIL = Pattern.compile("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$");
-
-    public TelaCadastroMembro(Scanner sc, List<Usuario> usuarios) {
-        super(sc, usuarios);
+    public TelaCadastroMembro(Scanner sc) {
+        super(sc);
     }
 
     @Override
@@ -20,11 +17,11 @@ public class TelaCadastroMembro extends TelaCadastroBase {
     }
 
     @Override
-    protected Usuario criarUsuario() {
+    protected String criarUsuario() {
         DadosBasicos dados = lerDadosBasicos();
 
         String email = lerTexto("E-mail");
-        if (!EMAIL.matcher(email).matches()) {
+        if (!Membro.validarEmail(email)) {
             throw new IllegalArgumentException("E-mail inválido.");
         }
 
@@ -35,11 +32,15 @@ public class TelaCadastroMembro extends TelaCadastroBase {
 
         String telefone = lerTexto("Telefone (com DDD)");
 
+        if (!Membro.validarTelefone(telefone)) {
+            throw new IllegalArgumentException("Telefone Invalido.");
+        }
+
         Membro membro = new Membro(dados.nome(), dados.cpf(), dados.login(), dados.senha(),
                 true, endereco, telefone, email);
 
-        Membro.validarTelefone(telefone);
+        String retorno = InserirApi.adicionarAPI(membro, TelaSistemaBiblioteca.getCliente(), "/membro");
 
-        return membro;
+        return retorno;
     }
 }

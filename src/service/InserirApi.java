@@ -33,7 +33,12 @@ public class InserirApi implements API {
         }
         if (resposta.statusCode() == 201) {
             return "Sucesso!";
+        } else {
+            try {
+                return mapper.readValue(resposta.body(), String.class);
+            } catch (Exception e) {
+                return "CPF, Login, ou email em uso!";
+            }
         }
-        return "Falha ao criar!";
     }
 }

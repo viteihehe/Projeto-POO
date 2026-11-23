@@ -1,10 +1,18 @@
 package UI;
 
+import java.net.http.HttpClient;
 import java.util.Scanner;
 
 public abstract class TelaBase {
 
+    private static HttpClient cliente;
+
     protected final Scanner sc;
+
+    protected TelaBase(Scanner sc, HttpClient cliente) {
+        this.sc = sc;
+        TelaBase.cliente = cliente;
+    }
 
     protected TelaBase(Scanner sc) {
         this.sc = sc;
@@ -12,7 +20,9 @@ public abstract class TelaBase {
 
     public abstract void mostrar();
 
-    /** Imprime um título destacado. */
+    /**
+     * Imprime um título destacado.
+     */
     protected void titulo(String texto) {
         String linha = "=".repeat(texto.length() + 4);
         System.out.println("\n" + linha);
@@ -43,5 +53,9 @@ public abstract class TelaBase {
 
     protected void emDesenvolvimento(String funcao) {
         System.out.println("[" + funcao + "] ainda não implementado.");
+    }
+
+    public static HttpClient getCliente() {
+        return cliente;
     }
 }
