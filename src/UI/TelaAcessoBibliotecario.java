@@ -91,7 +91,7 @@ public class TelaAcessoBibliotecario extends TelaBase {
             System.out.println("Este membro já está suspenso.");
             return;
         }
-        membro.desativarUsuario(membro);
+        Membro.desativarUsuario(membro);
         System.out.println("Membro suspenso: " + membro.getNome());
     }
 

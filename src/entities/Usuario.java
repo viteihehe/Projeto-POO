@@ -9,18 +9,21 @@ public abstract class Usuario {
     private String senha;
     private boolean ativo;
 
+    private static final List<Usuario> cadastrados = new ArrayList<>();
+
     public Usuario(String nome, String cpf, String login, String senha){
         setNome(nome);
         setCpf(cpf);
         setLogin(login);
         setSenha(senha);
         this.ativo = true;
+        cadastrados.add(this);
     }
     
     public void verUsuario(){
         System.out.println(this);
     }
-    public void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){
+    public static void editarUsuario(Usuario usuario, String nome, String cpf, String login, String senha, boolean ativo){
         if(!validaCpf(cpf)){
             throw new IllegalArgumentException("CPF inválido, alteração não realizada");
         }
@@ -30,14 +33,24 @@ public abstract class Usuario {
         usuario.setSenha(senha);
         usuario.setAtivo(ativo);
     }
-    public void desativarUsuario(Usuario usuario){
-        this.ativo = false;
+    public static void desativarUsuario(Usuario usuario){
+        usuario.setAtivo(false);
     }
-    public boolean autenticar(String login, String senha){
-        return ativo && this.login.equals(login) && this.senha.equals(senha);
+    public static boolean autenticar(String login, String senha){
+        return buscarPorLogin(login, senha) != null;
     }
 
-    public List<Usuario>listarUsuarios(List<Usuario> usuarios){
+    public static Usuario buscarPorLogin(String login, String senha){
+        for (Usuario u : cadastrados) {
+            if (u.ativo && u.login.equals(login) && u.senha.equals(senha)) {
+                return u;
+            }
+        }
+    return null;
+    }
+
+
+    public static List<Usuario>listarUsuarios(List<Usuario> usuarios){
         List<Usuario> lista = new ArrayList<>();
         
         for (Usuario usuario : usuarios) {
@@ -69,12 +82,12 @@ public abstract class Usuario {
         this.cpf = converteCpf(cpf);
     }
 
-    public String converteCpf(String cpf){
+    public static String converteCpf(String cpf){
         cpf = cpf.replaceAll("\\D", "");
         return cpf;
     }
 
-    public boolean validaCpf(String cpf){
+    public static boolean validaCpf(String cpf){
         if(cpf == null){
             return false;
         }
