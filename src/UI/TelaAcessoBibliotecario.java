@@ -1,20 +1,20 @@
 package UI;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
+
 import entities.Bibliotecario;
 import entities.Membro;
-import entities.Usuario;
+import service.BuscarAPI;
+import service.EditarApi;
+import service.ListarAPI;
 
 public class TelaAcessoBibliotecario extends TelaBase {
 
-    private final List<Usuario> usuarios;
     private final Bibliotecario bibliotecario;
 
-    public TelaAcessoBibliotecario(Scanner sc, List<Usuario> usuarios, Bibliotecario bibliotecario) {
+    public TelaAcessoBibliotecario(Scanner sc, Bibliotecario bibliotecario) {
         super(sc);
-        this.usuarios = usuarios;
         this.bibliotecario = bibliotecario;
     }
 
@@ -33,17 +33,24 @@ public class TelaAcessoBibliotecario extends TelaBase {
             System.out.println("7 - Sair (logout)");
 
             switch (lerOpcao()) {
-                case 1 -> verMeusDados();
-                case 2 -> listarMembros(false);
-                case 3 -> listarMembros(true);
-                case 4 -> suspenderMembro();
-                case 5 -> emDesenvolvimento("Gerenciar livros");
-                case 6 -> emDesenvolvimento("Gerenciar empréstimos");
+                case 1 ->
+                    verMeusDados();
+                case 2 ->
+                    listarMembros(false);
+                case 3 ->
+                    listarMembros(true);
+                case 4 ->
+                    suspenderMembro();
+                case 5 ->
+                    emDesenvolvimento("Gerenciar livros");
+                case 6 ->
+                    emDesenvolvimento("Gerenciar empréstimos");
                 case 7 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
                 }
-                default -> System.out.println("Opção inválida!");
+                default ->
+                    System.out.println("Opção inválida!");
             }
         }
     }
@@ -59,9 +66,7 @@ public class TelaAcessoBibliotecario extends TelaBase {
     private void listarMembros(boolean somenteSuspensos) {
         titulo(somenteSuspensos ? "MEMBROS SUSPENSOS" : "MEMBROS CADASTRADOS");
 
-        List<Membro> lista = buscarMembros().stream()
-                .filter(m -> !somenteSuspensos || !m.isAtivo())
-                .toList();
+        List<Membro> lista = ListarAPI.listar(TelaAcessoMembro.getCliente(), "/membro", Membro.class);
 
         if (lista.isEmpty()) {
             System.out.println("Nenhum membro encontrado.");
@@ -73,32 +78,25 @@ public class TelaAcessoBibliotecario extends TelaBase {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void suspenderMembro() {
         titulo("SUSPENDER MEMBRO");
         String login = lerTexto("Login do membro");
 
-        Optional<Membro> encontrado = buscarMembros().stream()
-                .filter(m -> m.getLogin().equals(login))
-                .findFirst();
-
-        if (encontrado.isEmpty()) {
+        Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
+        if (membro == null) {
             System.out.println("Membro não encontrado.");
             return;
         }
 
-        Membro membro = encontrado.get();
         if (!membro.isAtivo()) {
             System.out.println("Este membro já está suspenso.");
             return;
         }
         Membro.desativarUsuario(membro);
+        String ret = EditarApi.editarNaAPI(membro, TelaBase.getCliente(), "/membro/atualizar");
+        System.out.println(ret);
         System.out.println("Membro suspenso: " + membro.getNome());
     }
 
-    private List<Membro> buscarMembros() {
-        return usuarios.stream()
-                .filter(Membro.class::isInstance)
-                .map(Membro.class::cast)
-                .toList();
-    }
 }
