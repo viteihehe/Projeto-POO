@@ -1,16 +1,12 @@
 package UI;
 
-import java.util.List;
+import java.net.http.HttpClient;
 import java.util.Scanner;
-import entities.Usuario;
 
 public class TelaSistemaBiblioteca extends TelaBase {
 
-    private final List<Usuario> usuarios;
-
-    public TelaSistemaBiblioteca(Scanner sc, List<Usuario> usuarios) {
-        super(sc);
-        this.usuarios = usuarios;
+    public TelaSistemaBiblioteca(Scanner sc, HttpClient cliente) {
+        super(sc, cliente);
     }
 
     @Override
@@ -24,13 +20,22 @@ public class TelaSistemaBiblioteca extends TelaBase {
             System.out.println("3 - Sair");
 
             switch (lerOpcao()) {
-                case 1 -> new TelaLogin(sc, usuarios).mostrar();
-                case 2 -> mostrarMenuCadastro();
-                case 3 -> {
+                case 1:
+                    System.out.println("1 - Bibliotecário");
+                    System.out.println("2 - Membro");
+                    int tipo = lerOpcao();
+                    new TelaLogin(sc, tipo).mostrar();
+                    break;
+                case 2:
+                    mostrarMenuCadastro();
+                    break;
+                case 3:
                     System.out.println("Adeus!");
                     executando = false;
-                }
-                default -> System.out.println("Opção inválida!");
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+                    break;
             }
         }
     }
@@ -42,10 +47,16 @@ public class TelaSistemaBiblioteca extends TelaBase {
         System.out.println("3 - Voltar");
 
         switch (lerOpcao()) {
-            case 1 -> new TelaCadastroBibliotecario(sc, usuarios).mostrar();
-            case 2 -> new TelaCadastroMembro(sc, usuarios).mostrar();
-            case 3 -> { /* apenas volta ao menu inicial */ }
-            default -> System.out.println("Opção inválida!");
+            case 1 ->
+                // new TelaCadastroBibliotecario(sc).mostrar();
+                System.out.println("Temporariamente desabilitada!");
+            case 2 ->
+                new TelaCadastroMembro(sc).mostrar();
+            case 3 -> {
+                /* apenas volta ao menu inicial */ }
+            default ->
+                System.out.println("Opção inválida!");
         }
     }
+
 }

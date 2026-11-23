@@ -1,6 +1,7 @@
 package UI;
 
 import java.util.Scanner;
+
 import entities.Membro;
 
 public class TelaAcessoMembro extends TelaBase {
@@ -24,14 +25,18 @@ public class TelaAcessoMembro extends TelaBase {
             System.out.println("4 - Sair (logout)");
 
             switch (lerOpcao()) {
-                case 1 -> verMeusDados();
-                case 2 -> emDesenvolvimento("Consultar livros");
-                case 3 -> emDesenvolvimento("Meus empréstimos");
+                case 1 ->
+                    verMeusDados();
+                case 2 ->
+                    emDesenvolvimento("Consultar livros");
+                case 3 ->
+                    emDesenvolvimento("Meus empréstimos");
                 case 4 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
                 }
-                default -> System.out.println("Opção inválida!");
+                default ->
+                    System.out.println("Opção inválida!");
             }
         }
     }

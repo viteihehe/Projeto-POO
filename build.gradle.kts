@@ -16,6 +16,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
 }
 
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 sourceSets {
     getByName("main") {
         java.setSrcDirs(listOf("src"))
