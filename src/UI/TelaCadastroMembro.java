@@ -37,7 +37,7 @@ public class TelaCadastroMembro extends TelaCadastroBase {
         }
 
         Membro membro = new Membro(dados.nome(), dados.cpf(), dados.login(), dados.senha(),
-                true, endereco, telefone, email);
+                endereco, telefone, email);
 
         String retorno = InserirApi.adicionarAPI(membro, TelaSistemaBiblioteca.getCliente(), "/membro");
 
