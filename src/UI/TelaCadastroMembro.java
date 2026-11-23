@@ -35,8 +35,7 @@ public class TelaCadastroMembro extends TelaCadastroBase {
 
         String telefone = lerTexto("Telefone (com DDD)");
 
-        Membro membro = new Membro(dados.nome(), dados.cpf(), dados.login(), dados.senha(),
-                true, endereco, telefone, email);
+        Membro membro = Membro.criarMembro(dados.nome(), dados.cpf(), dados.login(), dados.senha(), endereco, telefone, email);
 
         Membro.validarTelefone(telefone);
 

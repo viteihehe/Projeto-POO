@@ -18,14 +18,16 @@ public class Membro extends Usuario {
         "81","82","83","84","85","86","87","88","89",
         "91","92","93","94","95","96","97","98","99"));
 
+    private static final List<Membro> membros = new ArrayList<>();
+
     private String endereco;
     private String telefone;
     private String email;
 
-    public Membro(String nome, String cpf, String login, String senha, boolean ativo, String endereco, String telefone, String email) {
+    private Membro(String nome, String cpf, String login, String senha, String endereco, String telefone, String email) {
         super(nome, cpf, login, senha);
         setEndereco(endereco);
-        setTelefone(telefone); 
+        setTelefone(telefone);
         setEmail(email);
     }
 
@@ -33,11 +35,25 @@ public class Membro extends Usuario {
         System.out.println(this);
     }
 
-    public static Membro criarMembro(String nome, String cpf, String login, String senha, boolean ativo, String endereco, String telefone, String email) {
-        return new Membro(nome, cpf, login, senha, ativo, endereco, telefone, email);
+    public static Membro criarMembro(String nome, String cpf, String login, String senha, String endereco, String telefone, String email) {
+        Membro membro = new Membro(nome, cpf, login, senha, endereco, telefone, email);
+        membros.add(membro);
+        return membro;
     }
 
-    public void editarMembro(Membro membro, String nome, String cpf, String login, String senha, boolean ativo, String endereco, String telefone, String email) {
+    public static void editarMembro(Membro membro, String nome, String cpf, String login, String senha, boolean ativo, String endereco, String telefone, String email) {
+        if (membro == null) {
+            throw new IllegalArgumentException("Membro não informado.");
+        }
+        if (!validaCpf(cpf)) {
+            throw new IllegalArgumentException("CPF inválido, alteração não realizada");
+        }
+        if (!validarTelefone(telefone)) {
+            throw new IllegalArgumentException("Telefone inválido: " + telefone);
+        }
+        if (!validarEmail(email)) {
+            throw new IllegalArgumentException("E-mail inválido: " + email);
+        }
         membro.setNome(nome);
         membro.setCpf(cpf);
         membro.setLogin(login);
@@ -48,17 +64,17 @@ public class Membro extends Usuario {
         membro.setEmail(email);
     }
 
-    public List<Membro> listarMembros(List<Membro> membros) {
-        List<Membro> lista = new ArrayList<>();
-        for (Membro membro : membros) {
-            lista.add(membro);
-            System.out.println(membro);
-        }
-        return lista;
+    public static List<Membro> listarMembros() {
+        return new ArrayList<>(membros);
     }
 
-    public List<Membro> listarMembrosSuspensos() {
+    public static List<Membro> listarMembrosSuspensos() {
         List<Membro> lista = new ArrayList<>();
+        for (Membro membro : membros) {
+            if (Emprestimo.membroSuspenso(membro)) {
+                lista.add(membro);
+            }
+        }
         return lista;
     }
 
