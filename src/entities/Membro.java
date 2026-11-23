@@ -32,6 +32,10 @@ public class Membro extends Usuario {
         setEmail(email);
     }
 
+    public Membro() {
+        super();
+    }
+
     public void verMembro() {
         System.out.println(this);
     }
@@ -182,7 +186,11 @@ public class Membro extends Usuario {
     }
 
     public void setEndereco(String endereco) {
-        this.endereco = endereco;
+        if (endereco != null) {
+            this.endereco = endereco; 
+        }else {
+            return;
+        }
     }
 
     public String getTelefone() {
@@ -190,10 +198,14 @@ public class Membro extends Usuario {
     }
 
     public void setTelefone(String telefone) {
-        if (!validarTelefone(telefone)) {
-            throw new IllegalArgumentException("Telefone inválido: " + telefone);
+        if (telefone != null) {
+            if (!validarTelefone(telefone)) {
+                throw new IllegalArgumentException("Telefone inválido: " + telefone);
+            }
+            this.telefone = normalizarTelefone(telefone);
+        } else {
+            return;
         }
-        this.telefone = normalizarTelefone(telefone);
     }
 
     public String getEmail() {
@@ -201,9 +213,13 @@ public class Membro extends Usuario {
     }
 
     public void setEmail(String email) {
-        if (!validarEmail(email)) {
-            throw new IllegalArgumentException("E-mail inválido: " + email);
+        if (email != null) {
+            if (!validarEmail(email)) {
+                throw new IllegalArgumentException("E-mail inválido: " + email);
+            }
+            this.email = email.trim();
+        } else {
+            return;
         }
-        this.email = email.trim();
     }
 }

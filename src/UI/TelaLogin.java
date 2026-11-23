@@ -33,12 +33,13 @@ public class TelaLogin extends TelaBase {
 
             DadosLogin dados = new DadosLogin(login, senha);
             String endereco;
-            if (getTipo() == 1) {
+            if (getTipo() == 2) {
                 endereco = "/membro/login";
             } else {
                 endereco = "/bibliotecario/login";
             }
             Boolean logado = BuscarAPI.login(dados, TelaSistemaBiblioteca.getCliente(), endereco);
+
             if (logado) {
                 System.out.println("\nBem-vindo !");
                 this.login = login;
@@ -55,10 +56,19 @@ public class TelaLogin extends TelaBase {
     private void abrirAreaDoUsuario(int tipo) {
         if (tipo == 1) {
             Bibliotecario bibli = (Bibliotecario) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/bibliotecario/buscar", (Class) Membro.class);
-            new TelaAcessoBibliotecario(sc, bibli).mostrar();
+            if (bibli != null) {
+                new TelaAcessoBibliotecario(sc, bibli).mostrar(); 
+            }else {
+                System.out.println("Houve um problema com o banco de dados!");
+            }
+
         } else if (tipo == 2) {
             Membro membro = (Membro) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
-            new TelaAcessoMembro(sc, membro).mostrar();
+            if (membro != null) {
+                new TelaAcessoMembro(sc, membro).mostrar(); 
+            }else {
+                System.out.println("Houve um problema com o banco de dados!");
+            }
         }
     }
 }

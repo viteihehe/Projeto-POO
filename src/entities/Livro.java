@@ -1,4 +1,5 @@
 package entities;
+
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,9 @@ public class Livro {
         this.anoPublicacao = anoPublicacao;
         this.numeroCopias = numeroCopias;
         this.disponiveis = numeroCopias;
+    }
+
+    public Livro() {
     }
 
     public String getIsbn() {
@@ -124,7 +128,9 @@ public class Livro {
         disponiveis -= quantidade;
     }
 
-    /** Usado ao criar um empréstimo: reduz em 1 as cópias disponíveis. */
+    /**
+     * Usado ao criar um empréstimo: reduz em 1 as cópias disponíveis.
+     */
     public void emprestarCopia() {
         if (disponiveis == 0) {
             throw new IllegalStateException("Nenhuma cópia disponível para empréstimo.");
@@ -132,7 +138,9 @@ public class Livro {
         disponiveis--;
     }
 
-    /** Usado ao registrar uma devolução: aumenta em 1 as cópias disponíveis. */
+    /**
+     * Usado ao registrar uma devolução: aumenta em 1 as cópias disponíveis.
+     */
     public void devolverCopia() {
         if (disponiveis >= numeroCopias) {
             throw new IllegalStateException("Todas as cópias já estão na biblioteca.");
@@ -163,7 +171,7 @@ public class Livro {
     }
 
     public void editarLivro(String isbn, String titulo, String autor, int anoPublicacao,
-                            int numeroCopias, int disponiveis) {
+            int numeroCopias, int disponiveis) {
         if (!validarIsbn(isbn)) {
             throw new IllegalArgumentException("ISBN inválido.");
         }
@@ -179,7 +187,7 @@ public class Livro {
         int emprestadasAtuais = this.numeroCopias - this.disponiveis;
         if (numeroCopias - disponiveis != emprestadasAtuais) {
             throw new IllegalArgumentException(
-                "Quantidades inconsistentes: há " + emprestadasAtuais + " cópia(s) emprestada(s).");
+                    "Quantidades inconsistentes: há " + emprestadasAtuais + " cópia(s) emprestada(s).");
         }
         for (Livro l : livros) {
             if (l != this && l.isbn.equals(isbn)) {

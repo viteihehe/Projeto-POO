@@ -7,12 +7,19 @@ import java.net.http.HttpResponse;
 
 public class BuscarAPI implements API {
 
-    public static <T> T buscar(T objetoAlvo, HttpClient cliente, String tipo, Class<T> classe) {
-
+    public static <T> T buscar(
+            T objetoAlvo,
+            HttpClient cliente,
+            String tipo,
+            Class<T> classe
+    ) {
         String json;
+
         try {
             json = mapper.writeValueAsString(objetoAlvo);
         } catch (Exception e) {
+            System.err.println("Erro ao converter objeto para JSON:");
+            e.printStackTrace();
             return null;
         }
 
@@ -22,20 +29,32 @@ public class BuscarAPI implements API {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        //Envia a requisição
         HttpResponse<String> resposta;
+
         try {
-            resposta = cliente.send(request, HttpResponse.BodyHandlers.ofString());
+            resposta = cliente.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
         } catch (Exception e) {
+            System.err.println("Erro ao enviar requisição:");
+            e.printStackTrace();
             return null;
         }
+
+        System.out.println("Status HTTP: " + resposta.statusCode());
+        System.out.println("Resposta da API: " + resposta.body());
+
         if (resposta.statusCode() == 200) {
             try {
                 return mapper.readValue(resposta.body(), classe);
             } catch (Exception e) {
+                System.err.println("Erro ao converter JSON para objeto:");
+                e.printStackTrace();
                 return null;
             }
         }
+
         return null;
     }
 

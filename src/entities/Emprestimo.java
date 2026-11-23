@@ -27,6 +27,9 @@ public class Emprestimo {
         this.devolvido = false;
     }
 
+    public Emprestimo() {
+    }
+
     public Livro getLivro() {
         return livro;
     }
@@ -132,7 +135,7 @@ public class Emprestimo {
     }
 
     public static void editarEmprestimo(Emprestimo emprestimo, Date dataEmprestimo, Date dataDevolucaoPrevista,
-                                       Date dataDevolucaoReal, boolean devolvido) {
+            Date dataDevolucaoReal, boolean devolvido) {
         if (emprestimo == null) {
             throw new IllegalArgumentException("Empréstimo não informado.");
         }

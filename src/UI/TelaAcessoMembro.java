@@ -44,7 +44,7 @@ public class TelaAcessoMembro extends TelaBase {
     private void verMeusDados() {
         titulo("MEUS DADOS");
         System.out.println("Nome    : " + membro.getNome());
-        System.out.println("CPF     : " + membro.getCpf());
+
         System.out.println("Login   : " + membro.getLogin());
         System.out.println("E-mail  : " + membro.getEmail());
         System.out.println("Telefone: " + membro.getTelefone());
