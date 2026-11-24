@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import entities.Bibliotecario;
 import entities.Membro;
+import interfaces.Cargo;
 import service.BuscarAPI;
 import service.DadosLogin;
 
@@ -57,16 +58,26 @@ public class TelaLogin extends TelaBase {
         if (tipo == 1) {
             Bibliotecario bibli = (Bibliotecario) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/bibliotecario/buscar", (Class) Membro.class);
             if (bibli != null) {
-                new TelaAcessoBibliotecario(sc, bibli).mostrar(); 
-            }else {
+                Cargo cargo = Cargo.valueOf(bibli.getCargo());
+
+                switch (cargo) {
+                    case SUPERVISOR ->
+                        new TelaAcessoBibliotecarioSuperior(sc, bibli).mostrar();
+                    case ATENDENTE ->
+                        new TelaAcessoBibliotecarioAtendente(sc, bibli).mostrar();
+                    case ESTAGIARIO ->
+                        new TelaAcessoBibliotecarioEstagiario(sc, bibli).mostrar();
+                    default ->
+                        throw new AssertionError();
+                }
+            } else {
                 System.out.println("Houve um problema com o banco de dados!");
             }
-
         } else if (tipo == 2) {
             Membro membro = (Membro) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
             if (membro != null) {
-                new TelaAcessoMembro(sc, membro).mostrar(); 
-            }else {
+                new TelaAcessoMembro(sc, membro).mostrar();
+            } else {
                 System.out.println("Houve um problema com o banco de dados!");
             }
         }

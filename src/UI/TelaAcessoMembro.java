@@ -1,6 +1,6 @@
 package UI;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -79,7 +79,7 @@ public class TelaAcessoMembro extends TelaBase {
 
     private void verMeusEmprestimos() {
         titulo("MEUS EMPRÉSTIMOS");
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         try {
             List<Emprestimo> emprestimos = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
@@ -91,10 +91,10 @@ public class TelaAcessoMembro extends TelaBase {
                 }
                 encontrou = true;
                 String situacao = e.isDevolvido()
-                        ? "Devolvido em " + formato.format(e.getDataDevolucaoReal())
-                        : "Devolução prevista: " + formato.format(e.getDataDevolucaoPrevista());
+                        ? "Devolvido em " + e.getDataDevolucaoReal().format(formato)
+                        : "Devolução prevista: " + e.getDataDevolucaoPrevista().format(formato);
                 System.out.println(e.getLivro().getTitulo()
-                        + " | Emprestado em " + formato.format(e.getDataEmprestimo())
+                        + " | Emprestado em " + e.getDataEmprestimo().format(formato)
                         + " | " + situacao);
                 if (e.calcularMulta() > 0) {
                     System.out.println("  Atraso: " + e.calcularMulta() + " dia(s) de suspensão");

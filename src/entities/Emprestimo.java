@@ -1,33 +1,40 @@
 package entities;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Emprestimo {
 
     private static final int PRAZO_DIAS = 14;
-    private static final List<Emprestimo> emprestimos = new ArrayList<>();
+    private static List<Emprestimo> emprestimos = new ArrayList<>();
 
     private Livro livro;
     private Membro membro;
-    private Date dataEmprestimo;
-    private Date dataDevolucaoPrevista;
-    private Date dataDevolucaoReal;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucaoPrevista;
+    private LocalDate dataDevolucaoReal;
     private boolean devolvido;
 
     public Emprestimo(Livro livro, Membro membro) {
         this.livro = livro;
         this.membro = membro;
-        this.dataEmprestimo = new Date();
-        this.dataDevolucaoPrevista = somarDias(this.dataEmprestimo, PRAZO_DIAS);
+        this.dataEmprestimo = LocalDate.now();
+        this.dataDevolucaoPrevista = this.dataEmprestimo.plusDays(PRAZO_DIAS);
         this.dataDevolucaoReal = null;
         this.devolvido = false;
     }
 
     public Emprestimo() {
+    }
+
+    public static List<Emprestimo> getEmprestimos() {
+        return emprestimos;
+    }
+
+    public static void setEmprestimos(List<Emprestimo> lista) {
+        emprestimos = lista;
     }
 
     public Livro getLivro() {
@@ -38,15 +45,15 @@ public class Emprestimo {
         return membro;
     }
 
-    public Date getDataEmprestimo() {
+    public LocalDate getDataEmprestimo() {
         return dataEmprestimo;
     }
 
-    public Date getDataDevolucaoPrevista() {
+    public LocalDate getDataDevolucaoPrevista() {
         return dataDevolucaoPrevista;
     }
 
-    public Date getDataDevolucaoReal() {
+    public LocalDate getDataDevolucaoReal() {
         return dataDevolucaoReal;
     }
 
@@ -54,21 +61,21 @@ public class Emprestimo {
         return devolvido;
     }
 
-    public void setDataEmprestimo(Date dataEmprestimo) {
+    public void setDataEmprestimo(LocalDate dataEmprestimo) {
         if (dataEmprestimo == null) {
             throw new IllegalArgumentException("A data de empréstimo é obrigatória.");
         }
         this.dataEmprestimo = dataEmprestimo;
     }
 
-    public void setDataDevolucaoPrevista(Date dataDevolucaoPrevista) {
+    public void setDataDevolucaoPrevista(LocalDate dataDevolucaoPrevista) {
         if (dataDevolucaoPrevista == null) {
             throw new IllegalArgumentException("A data de devolução prevista é obrigatória.");
         }
         this.dataDevolucaoPrevista = dataDevolucaoPrevista;
     }
 
-    public void setDataDevolucaoReal(Date dataDevolucaoReal) {
+    public void setDataDevolucaoReal(LocalDate dataDevolucaoReal) {
         this.dataDevolucaoReal = dataDevolucaoReal;
     }
 
@@ -84,13 +91,13 @@ public class Emprestimo {
         if (devolvido) {
             throw new IllegalStateException("Este empréstimo já foi devolvido.");
         }
-        this.dataDevolucaoReal = new Date();
+        this.dataDevolucaoReal = LocalDate.now();
         this.devolvido = true;
         livro.devolverCopia();
     }
 
     public static boolean membroSuspenso(Membro membro) {
-        Date agora = new Date();
+        LocalDate agora = LocalDate.now();
         for (Emprestimo e : emprestimos) {
             if (e.membro != membro) {
                 continue;
@@ -102,7 +109,7 @@ public class Emprestimo {
             if (!e.devolvido) {
                 return true;
             }
-            if (agora.before(somarDias(e.dataDevolucaoReal, multa))) {
+            if (agora.isBefore(e.dataDevolucaoReal.plusDays(multa))) {
                 return true;
             }
         }
@@ -110,12 +117,11 @@ public class Emprestimo {
     }
 
     public int calcularMulta() {
-        Date referencia = devolvido && dataDevolucaoReal != null ? dataDevolucaoReal : new Date();
-        if (!referencia.after(dataDevolucaoPrevista)) {
+        LocalDate referencia = devolvido && dataDevolucaoReal != null ? dataDevolucaoReal : LocalDate.now();
+        if (!referencia.isAfter(dataDevolucaoPrevista)) {
             return 0;
         }
-        long diferenca = referencia.getTime() - dataDevolucaoPrevista.getTime();
-        return (int) TimeUnit.MILLISECONDS.toDays(diferenca);
+        return (int) ChronoUnit.DAYS.between(dataDevolucaoPrevista, referencia);
     }
 
     public static Emprestimo criarEmprestimo(Livro livro, Membro membro) {
@@ -134,15 +140,15 @@ public class Emprestimo {
         return emprestimo;
     }
 
-    public static void editarEmprestimo(Emprestimo emprestimo, Date dataEmprestimo, Date dataDevolucaoPrevista,
-            Date dataDevolucaoReal, boolean devolvido) {
+    public static void editarEmprestimo(Emprestimo emprestimo, LocalDate dataEmprestimo, LocalDate dataDevolucaoPrevista,
+            LocalDate dataDevolucaoReal, boolean devolvido) {
         if (emprestimo == null) {
             throw new IllegalArgumentException("Empréstimo não informado.");
         }
         if (dataEmprestimo == null || dataDevolucaoPrevista == null) {
             throw new IllegalArgumentException("As datas de empréstimo e de devolução prevista são obrigatórias.");
         }
-        if (dataDevolucaoPrevista.before(dataEmprestimo)) {
+        if (dataDevolucaoPrevista.isBefore(dataEmprestimo)) {
             throw new IllegalArgumentException("A devolução prevista não pode ser anterior ao empréstimo.");
         }
         if (devolvido && dataDevolucaoReal == null) {
@@ -151,7 +157,7 @@ public class Emprestimo {
         if (!devolvido && dataDevolucaoReal != null) {
             throw new IllegalArgumentException("Empréstimo não devolvido não pode ter data de devolução real.");
         }
-        if (dataDevolucaoReal != null && dataDevolucaoReal.before(dataEmprestimo)) {
+        if (dataDevolucaoReal != null && dataDevolucaoReal.isBefore(dataEmprestimo)) {
             throw new IllegalArgumentException("A devolução real não pode ser anterior ao empréstimo.");
         }
         if (devolvido && !emprestimo.devolvido) {
@@ -220,14 +226,7 @@ public class Emprestimo {
     }
 
     private boolean estaAtrasado() {
-        return !devolvido && new Date().after(dataDevolucaoPrevista);
-    }
-
-    private static Date somarDias(Date data, int dias) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(data);
-        c.add(Calendar.DAY_OF_MONTH, dias);
-        return c.getTime();
+        return !devolvido && LocalDate.now().isAfter(dataDevolucaoPrevista);
     }
 
     @Override
@@ -240,4 +239,19 @@ public class Emprestimo {
                 + "\nDevolvido: " + devolvido
                 + "\nMulta (dias): " + calcularMulta() + "\n";
     }
+
+    /**
+     * @param livro the livro to set
+     */
+    public void setLivro(Livro livro) {
+        this.livro = livro;
+    }
+
+    /**
+     * @param membro the membro to set
+     */
+    public void setMembro(Membro membro) {
+        this.membro = membro;
+    }
+
 }

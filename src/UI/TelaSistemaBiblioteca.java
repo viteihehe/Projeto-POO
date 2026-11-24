@@ -40,16 +40,13 @@ public class TelaSistemaBiblioteca extends TelaBase {
 
     private void mostrarMenuCadastro() {
         titulo("CADASTRO");
-        System.out.println("1 - Bibliotecário");
-        System.out.println("2 - Membro");
-        System.out.println("3 - Voltar");
+        System.out.println("1 - Bibliotecário(Supervisor)");
+        System.out.println("2 - Voltar");
 
         switch (lerOpcao()) {
             case 1 ->
                 new TelaCadastroBibliotecarioSupervisor(sc).mostrar();
-            case 2 ->
-                new TelaCadastroMembro(sc).mostrar();
-            case 3 -> {
+            case 2 -> {
                 /* apenas volta ao menu inicial */ }
             default ->
                 System.out.println("Opção inválida!");

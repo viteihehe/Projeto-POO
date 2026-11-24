@@ -51,6 +51,42 @@ public abstract class TelaBase {
         }
     }
 
+    protected int lerInteiro() {
+        while (true) {
+            try {
+                return Integer.parseInt(sc.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Digite apenas números.");
+            }
+        }
+    }
+
+    protected String lerData() {
+        int ano, dia, mes;
+        while (true) {
+            System.out.println("Insira o dia:");
+            dia = lerInteiro();
+            if (!(dia < 1 || dia > 31)) {
+                break;
+            }
+        }
+        while (true) {
+            System.out.println("Insira o mês:");
+            mes = lerInteiro();
+            if (!(mes < 1 || mes > 12)) {
+                break;
+            }
+        }
+        while (true) {
+            System.out.println("Insira o dia:");
+            ano = lerInteiro();
+            if (!(dia < 1 || dia > 31)) {
+                break;
+            }
+        }
+        return String.format("%d-%d-%d", ano, mes, ano);
+    }
+
     protected void emDesenvolvimento(String funcao) {
         System.out.println("[" + funcao + "] ainda não implementado.");
     }
