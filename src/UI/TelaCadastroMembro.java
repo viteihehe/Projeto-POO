@@ -36,8 +36,7 @@ public class TelaCadastroMembro extends TelaCadastroBase {
             throw new IllegalArgumentException("Telefone Invalido.");
         }
 
-        Membro membro = new Membro(dados.nome(), dados.cpf(), dados.login(), dados.senha(),
-                endereco, telefone, email);
+        Membro membro = Membro.criarMembro(dados.nome(), dados.cpf(), dados.login(), dados.senha(), endereco, telefone, email);
 
         String retorno = InserirApi.adicionarAPI(membro, TelaSistemaBiblioteca.getCliente(), "/membro");
 
