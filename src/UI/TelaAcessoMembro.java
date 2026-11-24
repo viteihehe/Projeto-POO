@@ -28,9 +28,9 @@ public class TelaAcessoMembro extends TelaBase {
                 case 1 ->
                     verMeusDados();
                 case 2 ->
-                    emDesenvolvimento("Consultar livros");
+                    System.out.println("a");
                 case 3 ->
-                    emDesenvolvimento("Meus empréstimos");
+                    System.out.println("b");
                 case 4 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
@@ -44,8 +44,6 @@ public class TelaAcessoMembro extends TelaBase {
     private void verMeusDados() {
         titulo("MEUS DADOS");
         System.out.println("Nome    : " + membro.getNome());
-
-        System.out.println("Login   : " + membro.getLogin());
         System.out.println("E-mail  : " + membro.getEmail());
         System.out.println("Telefone: " + membro.getTelefone());
         System.out.println("Endereço: " + membro.getEndereco());

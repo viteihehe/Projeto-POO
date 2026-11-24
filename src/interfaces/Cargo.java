@@ -1,6 +1,7 @@
 package interfaces;
- public enum Cargo{
-    Estagiario, 
-    Atendente, 
-    Supervisor
+
+public enum Cargo {
+    ESTAGIARIO,
+    ATENDENTE,
+    SUPERVISOR
 }

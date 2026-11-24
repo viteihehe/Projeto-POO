@@ -20,22 +20,20 @@ public class TelaSistemaBiblioteca extends TelaBase {
             System.out.println("3 - Sair");
 
             switch (lerOpcao()) {
-                case 1:
+                case 1 -> {
                     System.out.println("1 - Bibliotecário");
                     System.out.println("2 - Membro");
                     int tipo = lerOpcao();
                     new TelaLogin(sc, tipo).mostrar();
-                    break;
-                case 2:
+                }
+                case 2 ->
                     mostrarMenuCadastro();
-                    break;
-                case 3:
+                case 3 -> {
                     System.out.println("Adeus!");
                     executando = false;
-                    break;
-                default:
+                }
+                default ->
                     System.out.println("Opção inválida!");
-                    break;
             }
         }
     }
@@ -48,8 +46,7 @@ public class TelaSistemaBiblioteca extends TelaBase {
 
         switch (lerOpcao()) {
             case 1 ->
-                // new TelaCadastroBibliotecario(sc).mostrar();
-                System.out.println("Temporariamente desabilitada!");
+                new TelaCadastroBibliotecarioSupervisor(sc).mostrar();
             case 2 ->
                 new TelaCadastroMembro(sc).mostrar();
             case 3 -> {
