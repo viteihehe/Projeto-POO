@@ -1,8 +1,10 @@
 package UI;
 
+import java.util.List;
 import java.util.Scanner;
 
 import entities.Bibliotecario;
+import service.ListarAPI;
 
 public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAtendente {
 
@@ -22,17 +24,19 @@ public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAten
             System.out.println("1 - Ver meus dados");
             System.out.println("2 - Listar membros");
             System.out.println("3 - Listar membros suspensos");
-            System.out.println("4 - Suspender membro");
-            System.out.println("5 - Cadastrar Livro");
-            System.out.println("6 - Gerenciar livros");
-            System.out.println("7 - Listar livro");
-            System.out.println("8 - Cadastrar empréstimo");
-            System.out.println("9 - Gerenciar empréstimo");
-            System.out.println("10 - Listar Emprestimos");
-            System.out.println("11 - Criar membro");
-            System.out.println("12 - Editar membro");
-            System.out.println("13 - Criar Bibliotecario");
-            System.out.println("14 - Sair (logout)");
+            System.out.println("4 - Desativar membro");
+            System.out.println("4 - Ativar membro");
+            System.out.println("6 - Cadastrar Livro");
+            System.out.println("7 - Gerenciar livros");
+            System.out.println("8 - Listar livro");
+            System.out.println("9 - Cadastrar empréstimo");
+            System.out.println("10 - Gerenciar empréstimo");
+            System.out.println("11 - Listar Emprestimos");
+            System.out.println("12 - Criar membro");
+            System.out.println("13 - Editar membro");
+            System.out.println("14 - Criar Bibliotecario");
+            System.out.println("15 - Listar Bibliotecario");
+            System.out.println("16 - Sair (logout)");
 
             switch (lerOpcao()) {
                 case 1 ->
@@ -42,32 +46,51 @@ public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAten
                 case 3 ->
                     super.listarMembros(true);
                 case 4 ->
-                    super.suspenderMembro();
+                    super.desativarMembro();
                 case 5 ->
-                    super.cadastrarLivro();
+                    super.ativarMembro();
                 case 6 ->
-                    super.gerenciarLivro();
+                    super.cadastrarLivro();
                 case 7 ->
-                    super.consultarLivros();
+                    super.gerenciarLivro();
                 case 8 ->
-                    super.cadastrarEmprestimo();
+                    super.consultarLivros();
                 case 9 ->
-                    super.gerenciarEmprestimo();
+                    super.cadastrarEmprestimo();
                 case 10 ->
-                    super.listarEmprestimos();
+                    super.gerenciarEmprestimo();
                 case 11 ->
-                    new TelaCadastroMembro(sc).mostrar();
+                    super.listarEmprestimos();
                 case 12 ->
-                    editarMembro();
+                    new TelaCadastroMembro(sc).mostrar();
                 case 13 ->
+                    editarMembro();
+                case 14 ->
                     new TelaCadastroBibliotecario(sc).mostrar();
-                case 14 -> {
+                case 15 ->
+                    listarBibliotecario();
+                case 16 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
                 }
                 default ->
                     System.out.println("Opção inválida!");
             }
+        }
+    }
+
+    private void listarBibliotecario() {
+        titulo("BIBLIOTECARIO CADASTRADOS");
+
+        List<Bibliotecario> lista = ListarAPI.listar(TelaAcessoMembro.getCliente(), "/bibliotecario", Bibliotecario.class);
+
+        if (lista.isEmpty()) {
+            System.out.println("Nenhum bibliotecario encontrado.");
+            return;
+        }
+
+        for (Bibliotecario b : lista) {
+            b.verBibliotecario();
         }
     }
 }

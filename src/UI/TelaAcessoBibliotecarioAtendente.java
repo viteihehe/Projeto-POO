@@ -25,16 +25,17 @@ public class TelaAcessoBibliotecarioAtendente extends TelaAcessoBibliotecarioEst
             System.out.println("1 - Ver meus dados");
             System.out.println("2 - Listar membros");
             System.out.println("3 - Listar membros suspensos");
-            System.out.println("4 - Suspender membro");
-            System.out.println("5 - Cadastrar Livro");
-            System.out.println("6 - Gerenciar livros");
-            System.out.println("7 - Listar livro");
-            System.out.println("8 - Cadastrar empréstimo");
-            System.out.println("9 - Gerenciar empréstimo");
-            System.out.println("10 - Listar Emprestimos");
-            System.out.println("11 - Criar membro");
-            System.out.println("12 - Editar membro");
-            System.out.println("13 - Sair (logout)");
+            System.out.println("4 - Desativar membro");
+            System.out.println("5 - Ativar membro");
+            System.out.println("6 - Cadastrar Livro");
+            System.out.println("7 - Gerenciar livros");
+            System.out.println("8 - Listar livro");
+            System.out.println("9 - Cadastrar empréstimo");
+            System.out.println("10 - Gerenciar empréstimo");
+            System.out.println("11 - Listar Emprestimos");
+            System.out.println("12 - Criar membro");
+            System.out.println("13 - Editar membro");
+            System.out.println("14 - Sair (logout)");
 
             switch (lerOpcao()) {
                 case 1 ->
@@ -44,24 +45,26 @@ public class TelaAcessoBibliotecarioAtendente extends TelaAcessoBibliotecarioEst
                 case 3 ->
                     super.listarMembros(true);
                 case 4 ->
-                    super.suspenderMembro();
+                    super.desativarMembro();
                 case 5 ->
-                    super.cadastrarLivro();
+                    super.ativarMembro();
                 case 6 ->
-                    super.gerenciarLivro();
+                    super.cadastrarLivro();
                 case 7 ->
-                    super.consultarLivros();
+                    super.gerenciarLivro();
                 case 8 ->
-                    super.cadastrarEmprestimo();
+                    super.consultarLivros();
                 case 9 ->
-                    super.gerenciarEmprestimo();
+                    super.cadastrarEmprestimo();
                 case 10 ->
-                    super.listarEmprestimos();
+                    super.gerenciarEmprestimo();
                 case 11 ->
-                    new TelaCadastroMembro(sc).mostrar();
+                    super.listarEmprestimos();
                 case 12 ->
+                    new TelaCadastroMembro(sc).mostrar();
+                case 13 ->
                     editarMembro();
-                case 13 -> {
+                case 14 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
                 }

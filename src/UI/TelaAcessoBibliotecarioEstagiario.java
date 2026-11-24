@@ -36,14 +36,15 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             System.out.println("1 - Ver meus dados");
             System.out.println("2 - Listar membros");
             System.out.println("3 - Listar membros suspensos");
-            System.out.println("4 - Suspender membro");
-            System.out.println("5 - Cadastrar Livro");
-            System.out.println("6 - Gerenciar livros");
-            System.out.println("7 - Listar livro");
-            System.out.println("8 - Cadastrar empréstimo");
-            System.out.println("9 - Gerenciar empréstimo");
-            System.out.println("10 - Listar Emprestimos");
-            System.out.println("11 - Sair (logout)");
+            System.out.println("4 - Desativar membro");
+            System.out.println("5 - Ativar membro");
+            System.out.println("6 - Cadastrar Livro");
+            System.out.println("7 - Gerenciar livros");
+            System.out.println("8 - Listar livro");
+            System.out.println("9 - Cadastrar empréstimo");
+            System.out.println("10 - Gerenciar empréstimo");
+            System.out.println("11 - Listar Emprestimos");
+            System.out.println("12 - Sair (logout)");
 
             switch (lerOpcao()) {
                 case 1 ->
@@ -53,20 +54,22 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 case 3 ->
                     listarMembros(true);
                 case 4 ->
-                    suspenderMembro();
+                    desativarMembro();
                 case 5 ->
-                    cadastrarLivro();
+                    ativarMembro();
                 case 6 ->
-                    gerenciarLivro();
+                    cadastrarLivro();
                 case 7 ->
-                    consultarLivros();
+                    gerenciarLivro();
                 case 8 ->
-                    cadastrarEmprestimo();
+                    consultarLivros();
                 case 9 ->
-                    gerenciarEmprestimo();
+                    cadastrarEmprestimo();
                 case 10 ->
+                    gerenciarEmprestimo();
+                case 11 ->
                     listarEmprestimos();
-                case 11 -> {
+                case 12 -> {
                     System.out.println("Sessão encerrada.");
                     logado = false;
                 }
@@ -146,9 +149,16 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             System.out.println("Nenhum membro encontrado.");
             return;
         }
+
         for (Membro m : lista) {
-            System.out.println(m.getNome() + " | login: " + m.getLogin()
-                    + " | " + (m.isAtivo() ? "Ativo" : "Suspenso"));
+            if (somenteSuspensos) {
+                if (Emprestimo.membroSuspenso(m)) {
+                    System.out.println(m.getNome() + " | login " + m.getLogin() + " | " + (m.isAtivo() ? "Ativo" : "Suspenso"));
+                }
+            } else {
+                System.out.println(m.getNome() + " | login " + m.getLogin() + " | " + (m.isAtivo() ? "Ativo" : "Suspenso"));
+            }
+
         }
     }
 
@@ -241,8 +251,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    protected void suspenderMembro() {
-        titulo("SUSPENDER MEMBRO");
+    protected void desativarMembro() {
+        titulo("DESATIVAR MEMBRO");
         String login = lerTexto("Login do membro");
 
         Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
@@ -259,6 +269,28 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
         String ret = EditarApi.editarNaAPI(membro, TelaBase.getCliente(), "/membro/atualizar");
         System.out.println(ret);
         System.out.println("Membro suspenso: " + membro.getNome());
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    protected void ativarMembro() {
+        titulo("DESATIVAR MEMBRO");
+        String login = lerTexto("Login do membro");
+
+        Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
+        if (membro == null) {
+            System.out.println("Membro não encontrado.");
+            return;
+        }
+
+        if (membro.isAtivo()) {
+            System.out.println("Este membro já está ativo.");
+            return;
+        }
+
+        Membro.editarMembro(membro, membro.getNome(), membro.getCpf(), login, membro.getSenha(), true, membro.getEndereco(), membro.getTelefone(), membro.getEmail());
+        String ret = EditarApi.editarNaAPI(membro, TelaBase.getCliente(), "/membro/atualizar");
+        System.out.println(ret);
+        System.out.println("Membro Ativo: " + membro.getNome());
     }
 
     protected void editarLivro(Livro livro) {
@@ -339,7 +371,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             if (login.isBlank()) {
                 throw new IllegalArgumentException("O login é obrigatório");
             }
-            String senha = lerTexto("Titulo");
+            String senha = lerTexto("Senha");
             if (senha.isBlank()) {
                 throw new IllegalArgumentException("A senha é obrigatório");
             }
@@ -356,6 +388,9 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 Livro livro = (Livro) (Object) BuscarAPI.buscar(isbn, TelaBase.getCliente(), "/Livro/buscar", (Class) Livro.class);
                 Emprestimo.setEmprestimos(ListarAPI.listar(TelaBase.getCliente(), "/emprestimo", Emprestimo.class));
                 Emprestimo emprestimo = Emprestimo.criarEmprestimo(livro, membro);
+                if (emprestimo == null) {
+                    return;
+                }
                 DadosEmp dadosEmp = new DadosEmp(emprestimo, membro, livro);
 
                 String retorno = InserirApi.adicionarAPI(dadosEmp, TelaBase.getCliente(), "/emprestimo");

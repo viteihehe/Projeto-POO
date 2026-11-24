@@ -56,7 +56,7 @@ public class TelaLogin extends TelaBase {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void abrirAreaDoUsuario(int tipo) {
         if (tipo == 1) {
-            Bibliotecario bibli = (Bibliotecario) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/bibliotecario/buscar", (Class) Membro.class);
+            Bibliotecario bibli = (Bibliotecario) (Object) BuscarAPI.buscar(this.login, TelaBase.getCliente(), "/bibliotecario/buscar", (Class) Bibliotecario.class);
             if (bibli != null) {
                 Cargo cargo = Cargo.valueOf(bibli.getCargo());
 
