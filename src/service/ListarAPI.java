@@ -40,7 +40,7 @@ public class ListarAPI implements API {
         return null;
     }
 
-    public static List<Emprestimo> listarPorMembro(HttpClient cliente, String tipo, Emprestimo emp, Membro membro) {
+    public static List<Emprestimo> listarPorMembro(HttpClient cliente, String tipo, Membro membro) {
         List<Emprestimo> retorno = new ArrayList<>();
 
         String json;
