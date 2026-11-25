@@ -10,7 +10,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JavaType;
 
 import entities.Emprestimo;
-import entities.Membro;
 
 public class ListarAPI implements API {
 
@@ -52,12 +51,12 @@ public class ListarAPI implements API {
         }
     }
 
-    public static List<Emprestimo> listarPorMembro(HttpClient cliente, String tipo, Membro membro) {
+    public static List<Emprestimo> listarPorMembro(HttpClient cliente, String tipo, String login) {
         List<Emprestimo> retorno = new ArrayList<>();
 
         String json;
         try {
-            json = mapper.writeValueAsString(membro);
+            json = mapper.writeValueAsString(login);
         } catch (Exception e) {
             return null;
         }

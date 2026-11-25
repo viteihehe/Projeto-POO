@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import UI.TelaBase;
-import service.DadosBuscaEmp;
 import service.DeletarAPI;
+import service.EditarApi;
+import service.EmprestimoRequest;
 import service.ListarAPI;
 
 public class Emprestimo {
@@ -174,10 +175,12 @@ public class Emprestimo {
         emprestimo.setDataDevolucaoPrevista(dataDevolucaoPrevista);
         emprestimo.setDataDevolucaoReal(dataDevolucaoReal);
         emprestimo.setDevolvido(devolvido);
+
+        String ret = EditarApi.editarNaAPI(emprestimo, TelaBase.getCliente(), "/emprestimo/atualizar");
     }
 
     public static void excluirEmprestimo(Emprestimo emprestimo) {
-        DadosBuscaEmp dadosEmp = new DadosBuscaEmp(emprestimo.dataEmprestimo, emprestimo.membro, emprestimo.livro);
+        EmprestimoRequest dadosEmp = new EmprestimoRequest(emprestimo.getDataEmprestimo(), emprestimo.getMembro().getLogin(), emprestimo.getLivro().getIsbn());
         String ret = DeletarAPI.deletar(dadosEmp, TelaBase.getCliente(), "/emprestimo/deletar");
         System.out.println(ret);
     }
@@ -200,7 +203,7 @@ public class Emprestimo {
     }
 
     public static List<Emprestimo> listarEmprestimosAtrasadosPorMembro(Membro membro) {
-        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
+        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro.getLogin());
         List<Emprestimo> atrasados = new ArrayList<>();
         if (lista != null) {
             for (Emprestimo e : lista) {
@@ -226,7 +229,7 @@ public class Emprestimo {
     }
 
     public static List<Emprestimo> listarEmprestimosAtivosPorMembro(Membro membro) {
-        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
+        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro.getLogin());
         List<Emprestimo> ativo = new ArrayList<>();
         if (lista != null) {
             for (Emprestimo e : lista) {
@@ -244,19 +247,19 @@ public class Emprestimo {
 
     @Override
     public String toString() {
-        return "Empréstimo: " + dataEmprestimo
+        return "Login: " + membro.getLogin()
+                + "\nEmpréstimo: " + dataEmprestimo
                 + "\nDevolução prevista: " + dataDevolucaoPrevista
                 + "\nDevolução real: " + (dataDevolucaoReal == null ? "-" : dataDevolucaoReal)
                 + "\nDevolvido: " + devolvido
-                + "\nMulta (dias): " + calcularMulta() + "\n";
+                + "\nMulta (dias): " + calcularMulta()
+                + "\nIsbn: " + livro.getIsbn() + "\n";
     }
 
-    
     public void setLivro(Livro livro) {
         this.livro = livro;
     }
 
-    
     public void setMembro(Membro membro) {
         this.membro = membro;
     }
