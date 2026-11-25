@@ -6,6 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import UI.TelaAcessoMembro;
+import UI.TelaSistemaBiblioteca;
+import service.BuscarAPI;
+import service.DadosLogin;
+import service.ListarAPI;
+
 public class Membro extends Usuario {
 
     private static final Set<String> DDDS_VALIDOS = new HashSet<>(Arrays.asList(
@@ -40,6 +46,11 @@ public class Membro extends Usuario {
         System.out.println(this);
     }
 
+    public static boolean autenticar(String login, String senha) {
+        DadosLogin dados = new DadosLogin(login, senha);
+        return BuscarAPI.login(dados, TelaSistemaBiblioteca.getCliente(), "/membro/login");
+    }
+
     public static Membro criarMembro(String nome, String cpf, String login, String senha, String endereco, String telefone, String email) {
         Membro membro = new Membro(nome, cpf, login, senha, endereco, telefone, email);
         membros.add(membro);
@@ -70,17 +81,27 @@ public class Membro extends Usuario {
     }
 
     public static List<Membro> listarMembros() {
-        return new ArrayList<>(membros);
+        List<Membro> lista = ListarAPI.listar(TelaAcessoMembro.getCliente(), "/membro", Membro.class);
+
+        if (lista.isEmpty()) {
+            System.out.println("Nenhum membro encontrado.");
+            return null;
+        }
+        return lista;
     }
 
     public static List<Membro> listarMembrosSuspensos() {
-        List<Membro> lista = new ArrayList<>();
+        List<Membro> lista = listarMembros();
+        if (lista.isEmpty()) {
+            return null;
+        }
+        List<Membro> suspensos = new ArrayList<>();
         for (Membro membro : membros) {
             if (Emprestimo.membroSuspenso(membro)) {
-                lista.add(membro);
+                suspensos.add(membro);
             }
         }
-        return lista;
+        return suspensos;
     }
 
     @Override
@@ -187,8 +208,8 @@ public class Membro extends Usuario {
 
     public void setEndereco(String endereco) {
         if (endereco != null) {
-            this.endereco = endereco; 
-        }else {
+            this.endereco = endereco;
+        } else {
             return;
         }
     }

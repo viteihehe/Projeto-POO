@@ -5,6 +5,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import UI.TelaBase;
+import service.DadosBuscaEmp;
+import service.DeletarAPI;
+import service.ListarAPI;
+
 public class Emprestimo {
 
     private static final int PRAZO_DIAS = 14;
@@ -172,57 +177,65 @@ public class Emprestimo {
     }
 
     public static void excluirEmprestimo(Emprestimo emprestimo) {
-        if (emprestimo == null) {
-            throw new IllegalArgumentException("Empréstimo não informado.");
-        }
-        if (!emprestimo.devolvido) {
-            emprestimo.livro.devolverCopia();
-        }
-        emprestimos.remove(emprestimo);
+        DadosBuscaEmp dadosEmp = new DadosBuscaEmp(emprestimo.dataEmprestimo, emprestimo.membro, emprestimo.livro);
+        String ret = DeletarAPI.deletar(dadosEmp, TelaBase.getCliente(), "/emprestimo/deletar");
+        System.out.println(ret);
     }
 
     public static List<Emprestimo> listarEmprestimos() {
-        return new ArrayList<>(emprestimos);
+        return ListarAPI.listar(TelaBase.getCliente(), "/emprestimo", Emprestimo.class);
     }
 
     public static List<Emprestimo> listarEmprestimosAtrasados() {
-        List<Emprestimo> lista = new ArrayList<>();
-        for (Emprestimo e : emprestimos) {
-            if (e.estaAtrasado()) {
-                lista.add(e);
+        List<Emprestimo> lista = listarEmprestimos();
+        List<Emprestimo> atrasados = new ArrayList<>();
+        if (lista != null) {
+            for (Emprestimo e : lista) {
+                if (e.estaAtrasado()) {
+                    atrasados.add(e);
+                }
             }
         }
-        return lista;
+        return atrasados;
     }
 
     public static List<Emprestimo> listarEmprestimosAtrasadosPorMembro(Membro membro) {
-        List<Emprestimo> lista = new ArrayList<>();
-        for (Emprestimo e : emprestimos) {
-            if (e.membro == membro && e.estaAtrasado()) {
-                lista.add(e);
+        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
+        List<Emprestimo> atrasados = new ArrayList<>();
+        if (lista != null) {
+            for (Emprestimo e : lista) {
+                if (e.estaAtrasado()) {
+                    atrasados.add(e);
+                }
             }
         }
-        return lista;
+        return atrasados;
     }
 
     public static List<Emprestimo> listarEmprestimosAtivos() {
-        List<Emprestimo> lista = new ArrayList<>();
-        for (Emprestimo e : emprestimos) {
-            if (!e.devolvido) {
-                lista.add(e);
+        List<Emprestimo> lista = listarEmprestimos();
+        List<Emprestimo> ativos = new ArrayList<>();
+        if (lista != null) {
+            for (Emprestimo e : lista) {
+                if (!e.estaAtrasado() && !e.isDevolvido()) {
+                    ativos.add(e);
+                }
             }
         }
-        return lista;
+        return ativos;
     }
 
     public static List<Emprestimo> listarEmprestimosAtivosPorMembro(Membro membro) {
-        List<Emprestimo> lista = new ArrayList<>();
-        for (Emprestimo e : emprestimos) {
-            if (e.membro == membro && !e.devolvido) {
-                lista.add(e);
+        List<Emprestimo> lista = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
+        List<Emprestimo> ativo = new ArrayList<>();
+        if (lista != null) {
+            for (Emprestimo e : lista) {
+                if (!e.estaAtrasado() && !e.isDevolvido()) {
+                    ativo.add(e);
+                }
             }
         }
-        return lista;
+        return ativo;
     }
 
     private boolean estaAtrasado() {
@@ -231,9 +244,7 @@ public class Emprestimo {
 
     @Override
     public String toString() {
-        return "Livro: " + livro.getTitulo()
-                + "\nMembro: " + membro.getNome()
-                + "\nEmpréstimo: " + dataEmprestimo
+        return "Empréstimo: " + dataEmprestimo
                 + "\nDevolução prevista: " + dataDevolucaoPrevista
                 + "\nDevolução real: " + (dataDevolucaoReal == null ? "-" : dataDevolucaoReal)
                 + "\nDevolvido: " + devolvido

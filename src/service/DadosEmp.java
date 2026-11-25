@@ -1,22 +1,23 @@
 package service;
 
-import entities.Emprestimo;
+import java.time.LocalDate;
+
 import entities.Livro;
 import entities.Membro;
 
 public class DadosEmp {
 
-    private Emprestimo emp;
+    private EmprestimoRequest emp;
     private Membro membro;
     private Livro livro;
 
-    public DadosEmp(Emprestimo emp, Membro membro, Livro livro) {
+    public DadosEmp(EmprestimoRequest emp, Membro membro, Livro livro) {
         this.emp = emp;
         this.membro = membro;
         this.livro = livro;
     }
 
-    public Emprestimo getEmp() {
+    public EmprestimoRequest getEmp() {
         return emp;
     }
 
@@ -27,5 +28,12 @@ public class DadosEmp {
     public Livro getLivro() {
         return livro;
     }
+
+    public record EmprestimoRequest(
+            boolean devolvido,
+            LocalDate dataEmprestimo,
+            LocalDate dataDevolucaoReal,
+            LocalDate dataDevolucaoPrevista
+            ) {}
 
 }

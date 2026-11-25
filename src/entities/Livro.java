@@ -4,6 +4,11 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
+import UI.TelaBase;
+import service.DeletarAPI;
+import service.EditarApi;
+import service.ListarAPI;
+
 public class Livro {
 
     private static final List<Livro> livros = new ArrayList<>();
@@ -170,7 +175,7 @@ public class Livro {
         return livro;
     }
 
-    public void editarLivro(String isbn, String titulo, String autor, int anoPublicacao,
+    public static void editarLivro(String isbn, String titulo, String autor, int anoPublicacao,
             int numeroCopias, int disponiveis) {
         if (!validarIsbn(isbn)) {
             throw new IllegalArgumentException("ISBN inválido.");
@@ -184,33 +189,19 @@ public class Livro {
             throw new IllegalArgumentException("Quantidades inválidas: 0 <= disponíveis <= número de cópias.");
         }
         // As cópias emprestadas dependem dos empréstimos em andamento e não podem ser alteradas por aqui
-        int emprestadasAtuais = this.numeroCopias - this.disponiveis;
+        int emprestadasAtuais = numeroCopias - disponiveis;
         if (numeroCopias - disponiveis != emprestadasAtuais) {
             throw new IllegalArgumentException(
                     "Quantidades inconsistentes: há " + emprestadasAtuais + " cópia(s) emprestada(s).");
         }
-        for (Livro l : livros) {
-            if (l != this && l.isbn.equals(isbn)) {
-                throw new IllegalArgumentException("Já existe um livro com esse ISBN.");
-            }
-        }
-        this.isbn = isbn;
-        this.titulo = titulo;
-        this.autor = autor;
-        this.anoPublicacao = anoPublicacao;
-        this.numeroCopias = numeroCopias;
-        this.disponiveis = disponiveis;
+        Livro livro = criarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias);
+        String ret = EditarApi.editarNaAPI(livro, TelaBase.getCliente(), "/Livro/atualizar");
+        System.out.println(ret);
     }
 
     public static void excluirLivro(Livro livro) {
-        if (livro == null) {
-            throw new IllegalArgumentException("Livro não informado.");
-        }
-        // Não permite excluir livros com cópias emprestadas
-        if (livro.disponiveis < livro.numeroCopias) {
-            throw new IllegalStateException("Não é possível excluir: há cópias emprestadas.");
-        }
-        livros.remove(livro);
+        String ret = DeletarAPI.deletar(livro.getIsbn(), TelaBase.getCliente(), "/Livro/deletar");
+        System.out.println(ret);
     }
 
     private static void validarAno(int ano) {
@@ -269,6 +260,6 @@ public class Livro {
     }
 
     public static List<Livro> listarLivros() {
-        return new ArrayList<>(livros);
+        return ListarAPI.listar(TelaBase.getCliente(), "/Livro", Livro.class);
     }
 }

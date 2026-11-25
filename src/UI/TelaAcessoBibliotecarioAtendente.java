@@ -41,9 +41,9 @@ public class TelaAcessoBibliotecarioAtendente extends TelaAcessoBibliotecarioEst
                 case 1 ->
                     super.verMeusDados();
                 case 2 ->
-                    super.listarMembros(false);
+                    super.exibirMembros(false);
                 case 3 ->
-                    super.listarMembros(true);
+                    super.exibirMembros(true);
                 case 4 ->
                     super.desativarMembro();
                 case 5 ->

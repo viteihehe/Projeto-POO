@@ -1,7 +1,6 @@
 package UI;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,8 +11,8 @@ import entities.Membro;
 import service.BuscarAPI;
 import service.DadosBuscaEmp;
 import service.DadosEmp;
+import service.DadosEmp.EmprestimoRequest;
 import service.DadosLogin;
-import service.DeletarAPI;
 import service.EditarApi;
 import service.InserirApi;
 import service.ListarAPI;
@@ -50,9 +49,9 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 case 1 ->
                     verMeusDados();
                 case 2 ->
-                    listarMembros(false);
+                    exibirMembros(false);
                 case 3 ->
-                    listarMembros(true);
+                    exibirMembros(true);
                 case 4 ->
                     desativarMembro();
                 case 5 ->
@@ -79,7 +78,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
         }
     }
 
-    protected String cadastrarLivro() {
+    protected void cadastrarLivro() {
 
         String titulo = lerTexto("Titulo");
         if (titulo.isBlank()) {
@@ -96,11 +95,12 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             throw new IllegalArgumentException("O ibsn é obrigatório, ou sua entrada é invalida");
         }
 
+        System.out.println("Ano de publicação:");
         int anoPublicacao = lerInteiro();
         if (anoPublicacao < 0) {
             throw new IllegalArgumentException("O ano de publicação é obrigatório e deve ser positivo");
         }
-
+        System.out.println("Numero de cópias:");
         int numeroCopias = lerInteiro();
         if (numeroCopias < 0) {
             throw new IllegalArgumentException("O numero de copias é obrigatório e deve ser positivo");
@@ -108,57 +108,49 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
 
         Livro livros = Livro.criarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias);
         String retorno = InserirApi.adicionarAPI(livros, TelaSistemaBiblioteca.getCliente(), "/Livro");
-        return retorno;
+        System.out.println(retorno);
     }
 
     protected void verMeusDados() {
         titulo("MEUS DADOS");
-        System.out.println("Nome : " + bibliotecario.getNome());
-        System.out.println("CPF  : " + bibliotecario.getCpf());
-        System.out.println("Login: " + bibliotecario.getLogin());
-        System.out.println("Cargo: " + bibliotecario.getCargo());
+        bibliotecario.verBibliotecario();
     }
 
     protected void consultarLivros() {
         titulo("ACERVO");
 
         try {
-            List<Livro> livros = ListarAPI.listar(TelaBase.getCliente(), "/livro", Livro.class);
+            List<Livro> livros = Livro.listarLivros();
 
             if (livros.isEmpty()) {
                 System.out.println("Nenhum livro cadastrado.");
                 return;
             }
             for (Livro livro : livros) {
-                System.out.println(livro.getTitulo() + " - " + livro.getAutor()
-                        + " (" + livro.getAnoPublicacao() + ")"
-                        + " | ISBN: " + livro.getIsbn()
-                        + " | Disponíveis: " + livro.getDisponiveis() + "/" + livro.getNumeroCopias());
+                livro.verLivro();
             }
         } catch (Exception e) {
             System.out.println("Não foi possível consultar os livros: " + e.getMessage());
         }
     }
 
-    protected void listarMembros(boolean somenteSuspensos) {
+    protected void exibirMembros(boolean somenteSuspensos) {
         titulo(somenteSuspensos ? "MEMBROS SUSPENSOS" : "MEMBROS CADASTRADOS");
 
-        List<Membro> lista = ListarAPI.listar(TelaAcessoMembro.getCliente(), "/membro", Membro.class);
+        List<Membro> lista;
+        if (somenteSuspensos) {
+            lista = Membro.listarMembrosSuspensos();
+        } else {
+            lista = Membro.listarMembros();
+        }
 
-        if (lista.isEmpty()) {
+        if (lista == null) {
             System.out.println("Nenhum membro encontrado.");
             return;
         }
 
         for (Membro m : lista) {
-            if (somenteSuspensos) {
-                if (Emprestimo.membroSuspenso(m)) {
-                    System.out.println(m.getNome() + " | login " + m.getLogin() + " | " + (m.isAtivo() ? "Ativo" : "Suspenso"));
-                }
-            } else {
-                System.out.println(m.getNome() + " | login " + m.getLogin() + " | " + (m.isAtivo() ? "Ativo" : "Suspenso"));
-            }
-
+            m.verMembro();
         }
     }
 
@@ -186,7 +178,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                     editarLivro(livro);
                     break;
                 case 2:
-                    deletarLivro(isbn);
+                    Livro.excluirLivro(livro);
                     break;
                 case 3:
                     System.out.println("Saindo do gerênciamento.");
@@ -208,7 +200,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             throw new IllegalArgumentException("O ISBN é obrigatório");
         }
         String login = lerTexto("Login");
-        if (isbn.isBlank()) {
+        if (login.isBlank()) {
             throw new IllegalArgumentException("O login é obrigatório");
         }
 
@@ -223,6 +215,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             System.out.println("Membro não encontrado.");
             return;
         }
+        DadosBuscaEmp dados = new DadosBuscaEmp(LocalDate.parse(dataEmp), membro, livro);
+        Emprestimo emp = (Emprestimo) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/emprestimo/buscar", (Class) Emprestimo.class);
 
         int op;
         boolean loop = true;
@@ -234,10 +228,10 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
 
             switch (op) {
                 case 1:
-                    editarEmprestimo(LocalDate.parse(dataEmp), membro, livro);
+                    editarEmprestimo(emp, membro, livro);
                     break;
                 case 2:
-                    deletarEmprestimo(LocalDate.parse(dataEmp), membro, livro);
+                    Emprestimo.excluirEmprestimo(emp);
                     break;
                 case 3:
                     System.out.println("Saindo do gerênciamento.");
@@ -273,7 +267,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected void ativarMembro() {
-        titulo("DESATIVAR MEMBRO");
+        titulo("ATIVAR MEMBRO");
         String login = lerTexto("Login do membro");
 
         Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
@@ -287,7 +281,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             return;
         }
 
-        Membro.editarMembro(membro, membro.getNome(), membro.getCpf(), login, membro.getSenha(), true, membro.getEndereco(), membro.getTelefone(), membro.getEmail());
+        Membro.editarMembro(membro, membro.getNome(), membro.getCpf(), login, null, true, membro.getEndereco(), membro.getTelefone(), membro.getEmail());
         String ret = EditarApi.editarNaAPI(membro, TelaBase.getCliente(), "/membro/atualizar");
         System.out.println(ret);
         System.out.println("Membro Ativo: " + membro.getNome());
@@ -310,7 +304,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 case 1 -> {
                     String titulo = lerTexto("Titulo");
                     if (titulo.isBlank()) {
-                        throw new IllegalArgumentException("O nome é obrigatório");
+                        throw new IllegalArgumentException("O titulo é obrigatório");
                     }
                     livro.setTitulo(titulo);
                 }
@@ -351,14 +345,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             }
 
         }
-
-        String ret = EditarApi.editarNaAPI(livro, TelaBase.getCliente(), "/Livro/atualizar");
-        System.out.println(ret);
-    }
-
-    protected void deletarLivro(String isbn) {
-        String ret = DeletarAPI.deletar(isbn, TelaBase.getCliente(), "/Livro/deletar");
-        System.out.println(ret);
+        Livro.editarLivro(livro.getIsbn(), livro.getTitulo(), livro.getAutor(), livro.getAnoPublicacao(), livro.getNumeroCopias(), livro.getDisponiveis());
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -391,24 +378,26 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 if (emprestimo == null) {
                     return;
                 }
-                DadosEmp dadosEmp = new DadosEmp(emprestimo, membro, livro);
+                EmprestimoRequest empenv = new EmprestimoRequest(
+                        emprestimo.isDevolvido(),
+                        emprestimo.getDataEmprestimo(),
+                        emprestimo.getDataDevolucaoReal(),
+                        emprestimo.getDataDevolucaoPrevista()
+                );
+                DadosEmp dadosEmp = new DadosEmp(empenv, membro, livro);
 
                 String retorno = InserirApi.adicionarAPI(dadosEmp, TelaBase.getCliente(), "/emprestimo");
                 System.out.println(retorno);
                 String ret = EditarApi.editarNaAPI(livro, TelaBase.getCliente(), "/Livro/atualizar");
                 System.out.println(retorno);
-
                 return;
             }
         }
     }
 
-    protected void editarEmprestimo(LocalDate dataEmp, Membro membro, Livro livro) {
+    protected void editarEmprestimo(Emprestimo emp, Membro membro, Livro livro) {
         int op;
         boolean loop = true;
-
-        DadosBuscaEmp dados = new DadosBuscaEmp(dataEmp, membro, livro);
-        Emprestimo emp = (Emprestimo) (Object) BuscarAPI.buscar(dados, TelaBase.getCliente(), "/emspretimos/buscar", (Class) Emprestimo.class);
 
         while (loop) {
             System.out.println("Escolha a opção para alterar:");
@@ -443,6 +432,11 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 }
                 case 4 -> {
                     emp.setDevolvido(!emp.isDevolvido());
+                    if (emp.isDevolvido()) {
+                        livro.devolverCopia();
+                    } else {
+                        livro.emprestarCopia();
+                    }
                 }
                 case 5 -> {
                     System.out.println("Fim da edição.");
@@ -453,25 +447,68 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             }
 
         }
-
-        DadosEmp dadosEmp = new DadosEmp(emp, membro, livro);
+        EmprestimoRequest empenv = new EmprestimoRequest(
+                emp.isDevolvido(),
+                emp.getDataEmprestimo(),
+                emp.getDataDevolucaoReal(),
+                emp.getDataDevolucaoPrevista()
+        );
+        DadosEmp dadosEmp = new DadosEmp(empenv, membro, livro);
         String ret = EditarApi.editarNaAPI(dadosEmp, TelaBase.getCliente(), "/emprestimo/atualizar");
-        System.out.println(ret);
-    }
-
-    protected void deletarEmprestimo(LocalDate dataEmp, Membro membro, Livro livro) {
-        DadosBuscaEmp dadosEmp = new DadosBuscaEmp(dataEmp, membro, livro);
-        String ret = DeletarAPI.deletar(dadosEmp, TelaBase.getCliente(), "/emprestimo/deletar");
+        Livro.editarLivro(livro.getIsbn(), livro.getTitulo(), livro.getAutor(), livro.getAnoPublicacao(), livro.getNumeroCopias(), livro.getDisponiveis());
         System.out.println(ret);
     }
 
     protected void listarEmprestimos() {
         titulo("EMPRÉSTIMOS");
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        System.out.println("Escolha a opção para listar:");
+        System.out.println("1 - Todos");
+        System.out.println("2 - Ativos");
+        System.out.println("3 - Atrasados");
+        System.out.println("4 - Ativos por membro");
+        System.out.println("5 - Atrasados por membro");
+        int op = lerOpcao();
+        List<Emprestimo> emprestimos;
+
+        switch (op) {
+            case 1:
+                emprestimos = Emprestimo.listarEmprestimos();
+                break;
+            case 2:
+                emprestimos = Emprestimo.listarEmprestimosAtivos();
+                break;
+            case 3:
+                emprestimos = Emprestimo.listarEmprestimosAtrasados();
+                break;
+            case 4:
+                String login = lerTexto("Login");
+                if (login.isBlank()) {
+                    throw new IllegalArgumentException("O login é obrigatório");
+                }
+                Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
+                if (membro == null) {
+                    System.out.println("Membro não encontrado.");
+                    return;
+                }
+                emprestimos = Emprestimo.listarEmprestimosAtivosPorMembro(membro);
+                break;
+            case 5:
+                String login1 = lerTexto("Login");
+                if (login1.isBlank()) {
+                    throw new IllegalArgumentException("O login é obrigatório");
+                }
+                Membro membro1 = (Membro) (Object) BuscarAPI.buscar(login1, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
+                if (membro1 == null) {
+                    System.out.println("Membro não encontrado.");
+                    return;
+                }
+                emprestimos = Emprestimo.listarEmprestimosAtrasadosPorMembro(membro1);
+                break;
+            default:
+                throw new AssertionError();
+        }
 
         try {
-            List<Emprestimo> emprestimos = ListarAPI.listar(TelaBase.getCliente(), "/emprestimo", Emprestimo.class);
-
             if (emprestimos != null) {
                 for (Emprestimo emp : emprestimos) {
                     emp.verEmprestimo();

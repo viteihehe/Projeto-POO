@@ -3,6 +3,12 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import UI.TelaAcessoMembro;
+import UI.TelaSistemaBiblioteca;
+import service.BuscarAPI;
+import service.DadosLogin;
+import service.ListarAPI;
+
 public abstract class Usuario {
 
     private String nome;
@@ -45,22 +51,13 @@ public abstract class Usuario {
     }
 
     public static boolean autenticar(String login, String senha) {
-        return buscarPorLogin(login, senha) != null;
+        DadosLogin dados = new DadosLogin(login, senha);
+        return BuscarAPI.login(dados, TelaSistemaBiblioteca.getCliente(), "/generico/");
     }
 
-    public static Usuario buscarPorLogin(String login, String senha) {
-        for (Usuario u : cadastrados) {
-            if (u.ativo && u.login.equals(login) && u.senha.equals(senha)) {
-                return u;
-            }
-        }
-        return null;
-    }
-
-    public static List<Usuario> listarUsuarios(List<Usuario> usuarios) {
-        List<Usuario> lista = new ArrayList<>(usuarios);
-
-        for (Usuario usuario : usuarios) {
+    public static List<Usuario> listarUsuarios() {
+        List<Usuario> lista = (List<Usuario>) ListarAPI.listar(TelaAcessoMembro.getCliente(), "/generico", Usuario.class);
+        for (Usuario usuario : lista) {
             lista.add(usuario);
             System.out.println(usuario);
         }
@@ -166,8 +163,8 @@ public abstract class Usuario {
 
     public void setLogin(String login) {
         if (login != null) {
-            this.login = login; 
-        }else {
+            this.login = login;
+        } else {
             return;
         }
     }

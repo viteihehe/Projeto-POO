@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import entities.Bibliotecario;
-import service.ListarAPI;
 
 public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAtendente {
 
@@ -25,7 +24,7 @@ public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAten
             System.out.println("2 - Listar membros");
             System.out.println("3 - Listar membros suspensos");
             System.out.println("4 - Desativar membro");
-            System.out.println("4 - Ativar membro");
+            System.out.println("5 - Ativar membro");
             System.out.println("6 - Cadastrar Livro");
             System.out.println("7 - Gerenciar livros");
             System.out.println("8 - Listar livro");
@@ -42,9 +41,9 @@ public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAten
                 case 1 ->
                     super.verMeusDados();
                 case 2 ->
-                    super.listarMembros(false);
+                    super.exibirMembros(false);
                 case 3 ->
-                    super.listarMembros(true);
+                    super.exibirMembros(true);
                 case 4 ->
                     super.desativarMembro();
                 case 5 ->
@@ -82,7 +81,7 @@ public class TelaAcessoBibliotecarioSuperior extends TelaAcessoBibliotecarioAten
     private void listarBibliotecario() {
         titulo("BIBLIOTECARIO CADASTRADOS");
 
-        List<Bibliotecario> lista = ListarAPI.listar(TelaAcessoMembro.getCliente(), "/bibliotecario", Bibliotecario.class);
+        List<Bibliotecario> lista = Bibliotecario.listarBibliotecarios();
 
         if (lista.isEmpty()) {
             System.out.println("Nenhum bibliotecario encontrado.");

@@ -51,7 +51,7 @@ public class ListarAPI implements API {
         }
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(URL + tipo + "/membro"))
+                .uri(URI.create(URL + tipo))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();

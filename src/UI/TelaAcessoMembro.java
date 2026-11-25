@@ -1,13 +1,11 @@
 package UI;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 import entities.Emprestimo;
 import entities.Livro;
 import entities.Membro;
-import service.ListarAPI;
 
 public class TelaAcessoMembro extends TelaBase {
 
@@ -48,29 +46,21 @@ public class TelaAcessoMembro extends TelaBase {
 
     private void verMeusDados() {
         titulo("MEUS DADOS");
-        System.out.println("Nome    : " + membro.getNome());
-        System.out.println("CPF     : " + membro.getCpf());
-        System.out.println("Login   : " + membro.getLogin());
-        System.out.println("E-mail  : " + membro.getEmail());
-        System.out.println("Telefone: " + membro.getTelefone());
-        System.out.println("Endereço: " + membro.getEndereco());
+        membro.verMembro();
     }
 
     private void consultarLivros() {
         titulo("ACERVO");
 
         try {
-            List<Livro> livros = ListarAPI.listar(TelaBase.getCliente(), "/livro", Livro.class);
+            List<Livro> livros = Livro.listarLivros();
 
             if (livros.isEmpty()) {
                 System.out.println("Nenhum livro cadastrado.");
                 return;
             }
             for (Livro livro : livros) {
-                System.out.println(livro.getTitulo() + " - " + livro.getAutor()
-                        + " (" + livro.getAnoPublicacao() + ")"
-                        + " | ISBN: " + livro.getIsbn()
-                        + " | Disponíveis: " + livro.getDisponiveis() + "/" + livro.getNumeroCopias());
+                livro.verLivro();
             }
         } catch (Exception e) {
             System.out.println("Não foi possível consultar os livros: " + e.getMessage());
@@ -79,28 +69,14 @@ public class TelaAcessoMembro extends TelaBase {
 
     private void verMeusEmprestimos() {
         titulo("MEUS EMPRÉSTIMOS");
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         try {
-            List<Emprestimo> emprestimos = ListarAPI.listarPorMembro(TelaBase.getCliente(), "/emprestimo/membro", membro);
-            boolean encontrou = false;
+            List<Emprestimo> emprestimos = Emprestimo.listarEmprestimosAtivosPorMembro(membro);
 
             for (Emprestimo e : emprestimos) {
-                if (!e.getMembro().getCpf().equals(membro.getCpf())) {
-                    continue;
-                }
-                encontrou = true;
-                String situacao = e.isDevolvido()
-                        ? "Devolvido em " + e.getDataDevolucaoReal().format(formato)
-                        : "Devolução prevista: " + e.getDataDevolucaoPrevista().format(formato);
-                System.out.println(e.getLivro().getTitulo()
-                        + " | Emprestado em " + e.getDataEmprestimo().format(formato)
-                        + " | " + situacao);
-                if (e.calcularMulta() > 0) {
-                    System.out.println("  Atraso: " + e.calcularMulta() + " dia(s) de suspensão");
-                }
+                e.verEmprestimo();
             }
-            if (!encontrou) {
+            if (emprestimos.isEmpty()) {
                 System.out.println("Você não possui empréstimos.");
             }
         } catch (Exception e) {

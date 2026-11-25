@@ -3,6 +3,12 @@ package entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import UI.TelaAcessoMembro;
+import UI.TelaSistemaBiblioteca;
+import service.BuscarAPI;
+import service.DadosLogin;
+import service.ListarAPI;
+
 public class Bibliotecario extends Usuario {
 
     private String cargo;
@@ -26,6 +32,11 @@ public class Bibliotecario extends Usuario {
         return b;
     }
 
+    public static boolean autenticar(String login, String senha) {
+        DadosLogin dados = new DadosLogin(login, senha);
+        return BuscarAPI.login(dados, TelaSistemaBiblioteca.getCliente(), "/bibliotecario/login");
+    }
+
     public static void editarBibliotecario(Bibliotecario bibliotecario, String nome, String cpf, String login, String senha, String cargo) {
         if (cargo == null || cargo.isBlank()) {
             throw new IllegalArgumentException("Cargo invalido, alteração não realizada");
@@ -39,7 +50,7 @@ public class Bibliotecario extends Usuario {
     }
 
     public static List<Bibliotecario> listarBibliotecarios() {
-        return new ArrayList<>(bibliotecarios);
+        return ListarAPI.listar(TelaAcessoMembro.getCliente(), "/bibliotecario", Bibliotecario.class);
     }
 
     public String getCargo() {

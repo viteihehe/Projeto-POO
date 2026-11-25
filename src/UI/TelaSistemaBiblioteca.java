@@ -21,10 +21,7 @@ public class TelaSistemaBiblioteca extends TelaBase {
 
             switch (lerOpcao()) {
                 case 1 -> {
-                    System.out.println("1 - Bibliotecário");
-                    System.out.println("2 - Membro");
-                    int tipo = lerOpcao();
-                    new TelaLogin(sc, tipo).mostrar();
+                    new TelaLogin(sc).mostrar();
                 }
                 case 2 ->
                     mostrarMenuCadastro();
