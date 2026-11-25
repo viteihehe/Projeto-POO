@@ -20,7 +20,13 @@ public class TelaCadastroBibliotecarioSupervisor extends TelaCadastroBase {
     @Override
     protected String criarUsuario() {
         DadosBasicos dados = lerDadosBasicos();
+        if (dados == null) {
+            return null;
+        }
         String cargo = lerCargo();
+        if (cargo == null) {
+            return null;
+        }
         if (!cargo.equals("SUPERVISOR")) {
             return "Cadastro invalido!";
         }
@@ -37,7 +43,8 @@ public class TelaCadastroBibliotecarioSupervisor extends TelaCadastroBase {
     private String lerCargo() {
         String entrada = lerTexto("Cargo(SUPERVISOR)");
         if (entrada.isBlank()) {
-            throw new IllegalArgumentException("O cargo é obrigatório.");
+            System.out.println("O cargo é obrigatório.");
+            return null;
         }
 
         try {

@@ -20,7 +20,13 @@ public class TelaCadastroBibliotecario extends TelaCadastroBase {
     @Override
     protected String criarUsuario() {
         DadosBasicos dados = lerDadosBasicos();
+        if (dados == null) {
+            return null;
+        }
         String cargo = lerCargo();
+        if (cargo == null) {
+            return null;
+        }
         Bibliotecario bibliotecario;
         try {
             bibliotecario = Bibliotecario.criarBibliotecario(dados.nome(), dados.cpf(), dados.login(), dados.senha(), cargo);
@@ -34,7 +40,8 @@ public class TelaCadastroBibliotecario extends TelaCadastroBase {
     private String lerCargo() {
         String entrada = lerTexto("Cargo(ATENDENTE, ESTAGIARIO)");
         if (entrada.isBlank()) {
-            throw new IllegalArgumentException("O cargo é obrigatório.");
+            System.out.println("O cargo é obrigatório.");
+            return null;
         }
 
         try {

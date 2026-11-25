@@ -19,21 +19,27 @@ public class TelaCadastroMembro extends TelaCadastroBase {
     @Override
     protected String criarUsuario() {
         DadosBasicos dados = lerDadosBasicos();
+        if (dados == null) {
+            return null;
+        }
 
         String email = lerTexto("E-mail");
         if (!Membro.validarEmail(email)) {
-            throw new IllegalArgumentException("E-mail inválido.");
+            System.out.println("E-mail inválido.");
+            return null;
         }
 
         String endereco = lerTexto("Endereço");
         if (endereco.isBlank()) {
-            throw new IllegalArgumentException("O endereço é obrigatório.");
+            System.out.println("O endereço é obrigatório.");
+            return null;
         }
 
         String telefone = lerTexto("Telefone (com DDD)");
 
         if (!Membro.validarTelefone(telefone)) {
-            throw new IllegalArgumentException("Telefone Invalido.");
+            System.out.println("Telefone Invalido.");
+            return null;
         }
 
         Membro membro = Membro.criarMembro(dados.nome(), dados.cpf(), dados.login(), dados.senha(), endereco, telefone, email);

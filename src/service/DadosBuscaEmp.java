@@ -8,24 +8,24 @@ import entities.Membro;
 public class DadosBuscaEmp {
 
     private LocalDate dataEmp;
-    private Membro membro;
-    private Livro livro;
+    private Membro membroUtil;
+    private Livro livroUtil;
 
-    public DadosBuscaEmp(LocalDate dataEmp, Membro membro, Livro livro) {
+    public DadosBuscaEmp(LocalDate dataEmp, Membro membroUtil, Livro livroUtil) {
         this.dataEmp = dataEmp;
-        this.membro = membro;
-        this.livro = livro;
+        this.membroUtil = membroUtil;
+        this.livroUtil = livroUtil;
     }
 
-    public LocalDate getEmp() {
+    public LocalDate getDataEmp() {
         return dataEmp;
     }
 
-    public Membro getMembro() {
-        return membro;
+    public Membro getMembroUtil() {
+        return membroUtil;
     }
 
-    public Livro getLivro() {
-        return livro;
+    public Livro getLivroUtil() {
+        return livroUtil;
     }
 }

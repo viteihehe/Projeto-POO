@@ -82,28 +82,34 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
 
         String titulo = lerTexto("Titulo");
         if (titulo.isBlank()) {
-            throw new IllegalArgumentException("O nome é obrigatório");
+            System.out.println("O título é obrigatório.");
+            return;
         }
 
-        String autor = lerTexto("autor");
+        String autor = lerTexto("Autor");
         if (autor.isBlank()) {
-            throw new IllegalArgumentException("O CPF é obrigatório");
+            System.out.println("O autor é obrigatório.");
+            return;
         }
 
         String isbn = lerTexto("ISBN");
         if (!Livro.validarIsbn(isbn)) {
-            throw new IllegalArgumentException("O ibsn é obrigatório, ou sua entrada é invalida");
+            System.out.println("ISBN inválido.");
+            return;
         }
 
         System.out.println("Ano de publicação:");
         int anoPublicacao = lerInteiro();
-        if (anoPublicacao < 0) {
-            throw new IllegalArgumentException("O ano de publicação é obrigatório e deve ser positivo");
+        if (anoPublicacao <= 0) {
+            System.out.println("O ano de publicação deve ser positivo.");
+            return;
         }
-        System.out.println("Numero de cópias:");
+
+        System.out.println("Número de cópias:");
         int numeroCopias = lerInteiro();
-        if (numeroCopias < 0) {
-            throw new IllegalArgumentException("O numero de copias é obrigatório e deve ser positivo");
+        if (numeroCopias <= 0) {
+            System.out.println("O número de cópias deve ser positivo.");
+            return;
         }
 
         Livro livros = Livro.criarLivro(isbn, titulo, autor, anoPublicacao, numeroCopias);
@@ -197,11 +203,13 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
         String dataEmp = lerData();
         String isbn = lerTexto("ISBN");
         if (isbn.isBlank()) {
-            throw new IllegalArgumentException("O ISBN é obrigatório");
+            System.out.println("O ISBN é obrigatório");
+            return;
         }
         String login = lerTexto("Login");
         if (login.isBlank()) {
-            throw new IllegalArgumentException("O login é obrigatório");
+            System.out.println("O login é obrigatório");
+            return;
         }
 
         Livro livro = (Livro) (Object) BuscarAPI.buscar(isbn, TelaBase.getCliente(), "/Livro/buscar", (Class) Livro.class);
@@ -216,8 +224,9 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             return;
         }
         DadosBuscaEmp dados = new DadosBuscaEmp(LocalDate.parse(dataEmp), membro, livro);
-        Emprestimo emp = (Emprestimo) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/emprestimo/buscar", (Class) Emprestimo.class);
-
+        Emprestimo emp = (Emprestimo) (Object) BuscarAPI.buscar(dados, TelaBase.getCliente(), "/emprestimo/buscar", (Class) Emprestimo.class);
+        emp.setMembro(membro);
+        emp.setLivro(livro);
         int op;
         boolean loop = true;
         while (loop) {
@@ -304,14 +313,16 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 case 1 -> {
                     String titulo = lerTexto("Titulo");
                     if (titulo.isBlank()) {
-                        throw new IllegalArgumentException("O titulo é obrigatório");
+                        System.out.println("O titulo é obrigatório");
+                        break;
                     }
                     livro.setTitulo(titulo);
                 }
                 case 2 -> {
                     String autor = lerTexto("autor");
                     if (autor.isBlank()) {
-                        throw new IllegalArgumentException("O CPF é obrigatório");
+                        System.out.println("O CPF é obrigatório");
+                        break;
                     }
                     livro.setAutor(autor);
                 }
@@ -319,7 +330,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                     System.out.println("Ano de publicação:");
                     int anoPublicacao = lerInteiro();
                     if (anoPublicacao < 0) {
-                        throw new IllegalArgumentException("O ano de publicação é obrigatório e deve ser positivo");
+                        System.out.println("O ano de publicação é obrigatório e deve ser positivo");
+                        break;
                     }
                     livro.setAnoPublicacao(anoPublicacao);
                 }
@@ -327,7 +339,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                     System.out.println("Numero de cópias:");
                     int numeroCopias = lerInteiro();
                     if (numeroCopias < 0) {
-                        throw new IllegalArgumentException("O numero de copias é obrigatório e deve ser positivo");
+                        System.out.println("O numero de copias é obrigatório e deve ser positivo");
+                        break;
                     }
                     System.out.println("Selecione a ação:");
                     System.out.println("1 - Adicionar");
@@ -347,7 +360,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 case 5 -> {
                     int disponiveis = lerInteiro();
                     if (disponiveis < 0) {
-                        throw new IllegalArgumentException("A quantidade de disponiveis é obrigatório e deve ser positivo");
+                        System.out.println("A quantidade de disponiveis é obrigatório e deve ser positivo");
+                        break;
                     }
                     livro.setDisponiveis(disponiveis);
                 }
@@ -371,11 +385,13 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
         while (tentativas >= 0) {
             String login = lerTexto("Login");
             if (login.isBlank()) {
-                throw new IllegalArgumentException("O login é obrigatório");
+                System.out.println("O login é obrigatório");
+                break;
             }
             String senha = lerTexto("Senha");
             if (senha.isBlank()) {
-                throw new IllegalArgumentException("A senha é obrigatório");
+                System.out.println("A senha é obrigatório");
+                break;
             }
             DadosLogin dados = new DadosLogin(login, senha);
             boolean valido = BuscarAPI.login(dados, TelaBase.getCliente(), "/membro/login");
@@ -384,7 +400,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             } else {
                 String isbn = lerTexto("ISBN");
                 if (login.isBlank()) {
-                    throw new IllegalArgumentException("A ISBN é obrigatória");
+                    System.out.println("A ISBN é obrigatória");
+                    break;
                 }
                 Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
                 Livro livro = (Livro) (Object) BuscarAPI.buscar(isbn, TelaBase.getCliente(), "/Livro/buscar", (Class) Livro.class);
@@ -498,7 +515,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             case 4:
                 String login = lerTexto("Login");
                 if (login.isBlank()) {
-                    throw new IllegalArgumentException("O login é obrigatório");
+
                 }
                 Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
                 if (membro == null) {
@@ -510,7 +527,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
             case 5:
                 String login1 = lerTexto("Login");
                 if (login1.isBlank()) {
-                    throw new IllegalArgumentException("O login é obrigatório");
+                    System.out.println("O login é obrigatório");
+                    return;
                 }
                 Membro membro1 = (Membro) (Object) BuscarAPI.buscar(login1, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
                 if (membro1 == null) {
@@ -528,6 +546,8 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                 for (Emprestimo emp : emprestimos) {
                     emp.verEmprestimo();
                 }
+            } else if (emprestimos.isEmpty()) {
+                System.out.println("Você não possui empréstimos.");
             } else {
                 System.out.println("Você não possui empréstimos.");
             }

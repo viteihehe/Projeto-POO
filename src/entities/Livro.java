@@ -60,13 +60,8 @@ public class Livro {
         if (!validarIsbn(isbn)) {
             throw new IllegalArgumentException("ISBN inválido.");
         }
-        String normalizado = normalizarIsbn(isbn);
-        for (Livro l : livros) {
-            if (l != this && l.isbn.equals(normalizado)) {
-                throw new IllegalArgumentException("Já existe um livro com esse ISBN.");
-            }
-        }
-        this.isbn = normalizado;
+
+        this.isbn = normalizarIsbn(isbn);
     }
 
     public void setTitulo(String titulo) {
@@ -125,7 +120,7 @@ public class Livro {
         if (quantidade <= 0) {
             throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
         }
-        
+
         if (quantidade > disponiveis) {
             throw new IllegalArgumentException("Não há cópias disponíveis suficientes para remover.");
         }
@@ -133,7 +128,6 @@ public class Livro {
         disponiveis -= quantidade;
     }
 
-   
     public void emprestarCopia() {
         if (disponiveis == 0) {
             throw new IllegalStateException("Nenhuma cópia disponível para empréstimo.");
@@ -141,7 +135,6 @@ public class Livro {
         disponiveis--;
     }
 
-    
     public void devolverCopia() {
         if (disponiveis >= numeroCopias) {
             throw new IllegalStateException("Todas as cópias já estão na biblioteca.");
@@ -184,7 +177,7 @@ public class Livro {
         if (numeroCopias < 0 || disponiveis < 0 || disponiveis > numeroCopias) {
             throw new IllegalArgumentException("Quantidades inválidas: 0 <= disponíveis <= número de cópias.");
         }
-        
+
         int emprestadasAtuais = numeroCopias - disponiveis;
         if (numeroCopias - disponiveis != emprestadasAtuais) {
             throw new IllegalArgumentException(

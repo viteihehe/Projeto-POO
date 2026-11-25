@@ -20,7 +20,6 @@ public abstract class TelaBase {
 
     public abstract void mostrar();
 
-    
     protected void titulo(String texto) {
         String linha = "=".repeat(texto.length() + 4);
         System.out.println("\n" + linha);
@@ -76,13 +75,13 @@ public abstract class TelaBase {
             }
         }
         while (true) {
-            System.out.println("Insira o dia:");
+            System.out.println("Insira o ano:");
             ano = lerInteiro();
-            if (!(dia < 1 || dia > 31)) {
+            if (ano > 0) {
                 break;
             }
         }
-        return String.format("%d-%d-%d", ano, mes, ano);
+        return String.format("%d-%d-%d", ano, mes, dia);
     }
 
     protected void emDesenvolvimento(String funcao) {

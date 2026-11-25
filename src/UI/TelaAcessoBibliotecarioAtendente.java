@@ -77,7 +77,8 @@ public class TelaAcessoBibliotecarioAtendente extends TelaAcessoBibliotecarioEst
     protected void editarMembro() {
         String login = lerTexto("Login");
         if (login.isBlank()) {
-            throw new IllegalArgumentException("O login é obrigatório");
+            System.out.println("O login é obrigatório");
+            return;
         }
 
         Membro membro = (Membro) (Object) BuscarAPI.buscar(login, TelaBase.getCliente(), "/membro/buscar", (Class) Membro.class);
@@ -106,35 +107,40 @@ public class TelaAcessoBibliotecarioAtendente extends TelaAcessoBibliotecarioEst
                 case 1 -> {
                     String nome = lerTexto("Nome");
                     if (nome.isBlank()) {
-                        throw new IllegalArgumentException("O nome é obrigatório");
+                        System.out.println("O nome é obrigatório");
+                        break;
                     }
                     membro.setNome(nome);
                 }
                 case 2 -> {
                     String cpf = lerTexto("CPF");
                     if (cpf.isBlank()) {
-                        throw new IllegalArgumentException("O CPF é obrigatório");
+                        System.out.println("O CPF é obrigatório");
+                        break;
                     }
                     membro.setCpf(cpf);
                 }
                 case 3 -> {
                     String email = lerTexto("Email");
                     if (email.isBlank()) {
-                        throw new IllegalArgumentException("O email é obrigatório");
+                        System.out.println("O email é obrigatório");
+                        break;
                     }
                     membro.setEmail(email);
                 }
                 case 4 -> {
                     String telefone = lerTexto("Telefone");
                     if (telefone.isBlank()) {
-                        throw new IllegalArgumentException("O telefone é obrigatório");
+                        System.out.println("O telefone é obrigatório");
+                        break;
                     }
                     membro.setTelefone(telefone);
                 }
                 case 5 -> {
                     String senha = lerTexto("Senha");
                     if (senha.isBlank()) {
-                        throw new IllegalArgumentException("A senha é obrigatória");
+                        System.out.println("A senha é obrigatória");
+                        break;
                     }
                     membro.setSenha(senha);
                 }

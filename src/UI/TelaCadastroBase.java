@@ -23,6 +23,9 @@ public abstract class TelaCadastroBase extends TelaBase {
         titulo(tituloTela());
         try {
             String retorno = criarUsuario();
+            if (retorno == null) {
+                return;
+            }
             if (retorno.equals("sucesso")) {
                 System.out.println("\nCadastro realizado com sucesso!");
             } else {
@@ -36,25 +39,30 @@ public abstract class TelaCadastroBase extends TelaBase {
     protected DadosBasicos lerDadosBasicos() {
         String nome = lerTexto("Nome");
         if (nome.isBlank()) {
-            throw new IllegalArgumentException("O nome é obrigatório");
+            System.out.println("O nome é obrigatório");
+            return null;
         }
 
         String cpf = lerTexto("CPF");
         if (cpf.isBlank()) {
-            throw new IllegalArgumentException("O CPF é obrigatório");
+            System.out.println("O CPF é obrigatório");
+            return null;
         }
 
         String login = lerTexto("Login");
         if (login.isBlank()) {
-            throw new IllegalArgumentException("O login é obrigatório");
+            System.out.println("O login é obrigatório");
+            return null;
         }
 
         String senha = lerSenha("Senha (mínimo " + TAMANHO_MIN_SENHA + " caracteres)");
         if (senha.length() < TAMANHO_MIN_SENHA) {
-            throw new IllegalArgumentException("A senha deve ter pelo menos " + TAMANHO_MIN_SENHA + " caracteres.");
+            System.out.println("A senha deve ter pelo menos " + TAMANHO_MIN_SENHA + " caracteres.");
+            return null;
         }
         if (!senha.equals(lerSenha("Confirme a senha"))) {
-            throw new IllegalArgumentException("As senhas não conferem.");
+            System.out.println("As senhas não conferem.");
+            return null;
         }
 
         return new DadosBasicos(nome, cpf, login, senha);
