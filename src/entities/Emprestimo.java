@@ -251,16 +251,12 @@ public class Emprestimo {
                 + "\nMulta (dias): " + calcularMulta() + "\n";
     }
 
-    /**
-     * @param livro the livro to set
-     */
+    
     public void setLivro(Livro livro) {
         this.livro = livro;
     }
 
-    /**
-     * @param membro the membro to set
-     */
+    
     public void setMembro(Membro membro) {
         this.membro = membro;
     }

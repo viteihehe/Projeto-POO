@@ -9,7 +9,7 @@ public class DeletarAPI implements API {
 
     public static <T> String deletar(T novoObjeto, HttpClient cliente, String tipo) {
 
-        //Convertendo o objeto em um arquivo compativel com a API
+        
         String json;
         try {
             json = mapper.writeValueAsString(novoObjeto);
@@ -17,14 +17,14 @@ public class DeletarAPI implements API {
             return "Erro ao converter o Objeto!";
         }
 
-        //Prepara a requisição
+        
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL + tipo))
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        //Envia a requisição
+        
         HttpResponse<String> resposta;
         try {
             resposta = cliente.send(request, HttpResponse.BodyHandlers.ofString());

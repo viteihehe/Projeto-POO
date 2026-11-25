@@ -316,6 +316,7 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                     livro.setAutor(autor);
                 }
                 case 3 -> {
+                    System.out.println("Ano de publicação:");
                     int anoPublicacao = lerInteiro();
                     if (anoPublicacao < 0) {
                         throw new IllegalArgumentException("O ano de publicação é obrigatório e deve ser positivo");
@@ -323,11 +324,25 @@ public class TelaAcessoBibliotecarioEstagiario extends TelaBase {
                     livro.setAnoPublicacao(anoPublicacao);
                 }
                 case 4 -> {
+                    System.out.println("Numero de cópias:");
                     int numeroCopias = lerInteiro();
                     if (numeroCopias < 0) {
                         throw new IllegalArgumentException("O numero de copias é obrigatório e deve ser positivo");
                     }
-                    livro.setNumeroCopias(numeroCopias);
+                    System.out.println("Selecione a ação:");
+                    System.out.println("1 - Adicionar");
+                    System.out.println("2 - Remover");
+                    int temp = lerOpcao();
+                    switch (temp) {
+                        case 1:
+                            livro.adicionarCopias(numeroCopias);
+                            break;
+                        case 2:
+                            livro.removerCopias(numeroCopias);
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
                 }
                 case 5 -> {
                     int disponiveis = lerInteiro();

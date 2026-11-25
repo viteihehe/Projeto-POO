@@ -22,7 +22,7 @@ public class ListarAPI implements API {
                 .GET()
                 .build();
 
-        //Envia a requisição
+        
         HttpResponse<String> resposta;
         try {
             resposta = cliente.send(request, HttpResponse.BodyHandlers.ofString());

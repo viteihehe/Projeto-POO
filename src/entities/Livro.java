@@ -125,7 +125,7 @@ public class Livro {
         if (quantidade <= 0) {
             throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
         }
-        // Só é possível remover cópias que não estão emprestadas
+        
         if (quantidade > disponiveis) {
             throw new IllegalArgumentException("Não há cópias disponíveis suficientes para remover.");
         }
@@ -133,9 +133,7 @@ public class Livro {
         disponiveis -= quantidade;
     }
 
-    /**
-     * Usado ao criar um empréstimo: reduz em 1 as cópias disponíveis.
-     */
+   
     public void emprestarCopia() {
         if (disponiveis == 0) {
             throw new IllegalStateException("Nenhuma cópia disponível para empréstimo.");
@@ -143,9 +141,7 @@ public class Livro {
         disponiveis--;
     }
 
-    /**
-     * Usado ao registrar uma devolução: aumenta em 1 as cópias disponíveis.
-     */
+    
     public void devolverCopia() {
         if (disponiveis >= numeroCopias) {
             throw new IllegalStateException("Todas as cópias já estão na biblioteca.");
@@ -188,7 +184,7 @@ public class Livro {
         if (numeroCopias < 0 || disponiveis < 0 || disponiveis > numeroCopias) {
             throw new IllegalArgumentException("Quantidades inválidas: 0 <= disponíveis <= número de cópias.");
         }
-        // As cópias emprestadas dependem dos empréstimos em andamento e não podem ser alteradas por aqui
+        
         int emprestadasAtuais = numeroCopias - disponiveis;
         if (numeroCopias - disponiveis != emprestadasAtuais) {
             throw new IllegalArgumentException(

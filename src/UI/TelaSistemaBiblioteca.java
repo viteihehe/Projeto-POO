@@ -43,8 +43,7 @@ public class TelaSistemaBiblioteca extends TelaBase {
         switch (lerOpcao()) {
             case 1 ->
                 new TelaCadastroBibliotecarioSupervisor(sc).mostrar();
-            case 2 -> {
-                /* apenas volta ao menu inicial */ }
+            case 2 -> {}
             default ->
                 System.out.println("Opção inválida!");
         }

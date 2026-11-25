@@ -73,7 +73,6 @@ public class BuscarAPI implements API {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        //Envia a requisição
         HttpResponse<String> resposta;
         try {
             resposta = cliente.send(request, HttpResponse.BodyHandlers.ofString());

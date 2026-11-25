@@ -20,9 +20,7 @@ public abstract class TelaBase {
 
     public abstract void mostrar();
 
-    /**
-     * Imprime um título destacado.
-     */
+    
     protected void titulo(String texto) {
         String linha = "=".repeat(texto.length() + 4);
         System.out.println("\n" + linha);
