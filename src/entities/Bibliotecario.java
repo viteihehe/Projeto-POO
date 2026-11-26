@@ -63,7 +63,7 @@ public class Bibliotecario extends Usuario {
 
     @Override
     public String toString() {
-        return super.toString() + " Cargo:" + cargo;
+        return super.toString() + "Cargo:" + cargo;
     }
 
 }

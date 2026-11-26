@@ -43,7 +43,7 @@ public class Membro extends Usuario {
     }
 
     public void verMembro() {
-        System.out.println(this);
+        System.out.println(this + "\n");
     }
 
     public static boolean autenticar(String login, String senha) {

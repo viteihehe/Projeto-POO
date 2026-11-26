@@ -105,7 +105,7 @@ public class Livro {
         System.out.println("Autor: " + autor);
         System.out.println("Ano de publicação: " + anoPublicacao);
         System.out.println("Cópias: " + numeroCopias);
-        System.out.println("Disponíveis: " + disponiveis);
+        System.out.println("Disponíveis: " + disponiveis + "\n");
     }
 
     public void adicionarCopias(int quantidade) {
